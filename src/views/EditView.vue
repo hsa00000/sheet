@@ -59,16 +59,6 @@ const activityStore = useActivityStore()
 </script>
 
 <style scoped>
-/* Print page layout */
-.print-page {
-  width: 210mm; /* A4 width */
-  height: 297mm; /* A4 height */
-  padding-left: 4mm; /* Adjust as needed */
-  padding-right: 4mm; /* Adjust as needed */
-  box-sizing: border-box;
-  page-break-after: always; /* Ensure page breaks when printing */
-}
-
 /* Table font size */
 .v-data-table,
 .v-card-text {
