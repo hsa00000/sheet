@@ -1,10 +1,15 @@
 <template>
-  <v-card>
+  <v-card variant="text">
     <v-toolbar class="invisible-when-print px-2">
       <v-btn @click="modeStore.mode = 'edit'"> 編輯模式 </v-btn
       ><v-btn @click="modeStore.mode = 'print'" variant="tonal"> 列印模式 </v-btn></v-toolbar
     >
-    <v-card v-for="(pageItems, pageIndex) in paginatedItems" :key="pageIndex" class="print-page">
+    <v-card
+      v-for="(pageItems, pageIndex) in paginatedItems"
+      :key="pageIndex"
+      class="print-page"
+      variant="text"
+    >
       <v-card-text class="text-body-1 text-center">
         <p class="text-h3 font-weight-bold">{{ `${activityStore.name}簽到表` }}</p>
       </v-card-text>
@@ -58,7 +63,7 @@ const paginatedItems = computed(() => {
 /* Print page layout */
 .print-page {
   width: 210mm; /* A4 width */
-  height: 297mm; /* A4 height */
+  height: 280mm; /* A4 height */
   padding-left: 4mm; /* Adjust as needed */
   padding-right: 4mm; /* Adjust as needed */
   box-sizing: border-box;
@@ -93,5 +98,11 @@ const paginatedItems = computed(() => {
 :deep() .v-table .v-table__wrapper > table > thead > tr > th:not(:last-child),
 :deep() .v-table .v-table__wrapper > table > tbody > tr > td:not(:last-child) {
   border-right: 1px solid #000 !important;
+}
+
+@media print {
+  .invisible-when-print {
+    display: none;
+  }
 }
 </style>
