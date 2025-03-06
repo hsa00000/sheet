@@ -1,9 +1,5 @@
 <template>
   <v-card variant="text">
-    <v-toolbar class="invisible-when-print px-2">
-      <v-btn @click="modeStore.mode = 'edit'"> 編輯模式 </v-btn
-      ><v-btn @click="modeStore.mode = 'print'" variant="tonal"> 列印模式 </v-btn></v-toolbar
-    >
     <v-card
       v-for="(pageItems, pageIndex) in paginatedItems"
       :key="pageIndex"
@@ -38,7 +34,7 @@
 </template>
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
-import { useModeStore } from '@/stores/modeStore'
+
 import type { Header, Participant } from '@/type/type'
 import { sortBy, itemsPerPage } from '@/const/const'
 import { computed } from 'vue'
@@ -47,7 +43,6 @@ const props = defineProps<{
   headers: Header[]
 }>()
 
-const modeStore = useModeStore()
 const activityStore = useActivityStore()
 
 const paginatedItems = computed(() => {
@@ -98,11 +93,5 @@ const paginatedItems = computed(() => {
 :deep() .v-table .v-table__wrapper > table > thead > tr > th:not(:last-child),
 :deep() .v-table .v-table__wrapper > table > tbody > tr > td:not(:last-child) {
   border-right: 1px solid #000 !important;
-}
-
-@media print {
-  .invisible-when-print {
-    display: none;
-  }
 }
 </style>

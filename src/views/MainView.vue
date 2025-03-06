@@ -1,6 +1,10 @@
 <template>
   <v-container class="d-flex justify-center align-center">
     <v-row>
+      <v-toolbar class="invisible-when-print px-2">
+        <v-btn @click="modeStore.mode = 'edit'"> 編輯模式 </v-btn
+        ><v-btn @click="modeStore.mode = 'print'" variant="tonal"> 列印模式 </v-btn></v-toolbar
+      >
       <v-col cols="3" v-if="modeStore.mode === 'edit'">123</v-col>
       <v-col :cols="modeStore.mode === 'edit' ? 6 : 12">
         <EditView v-if="modeStore.mode === 'edit'" :participant-list="items" :headers="headers" />
@@ -100,6 +104,12 @@ const headers: Ref<Header[]> = ref([
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+}
+
+@media print {
+  .invisible-when-print {
+    display: none;
   }
 }
 </style>

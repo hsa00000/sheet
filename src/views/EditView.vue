@@ -1,9 +1,5 @@
 <template>
   <v-card>
-    <v-toolbar class="invisible-when-print px-2">
-      <v-btn @click="modeStore.mode = 'edit'" variant="tonal"> 編輯模式 </v-btn
-      ><v-btn @click="modeStore.mode = 'print'"> 列印模式 </v-btn></v-toolbar
-    >
     <v-card class="print-page">
       <v-card-text>
         <v-text-field
@@ -46,7 +42,7 @@
 </template>
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
-import { useModeStore } from '@/stores/modeStore'
+
 import type { Header, Participant } from '@/type/type'
 import { sortBy, itemsPerPage } from '@/const/const'
 const props = defineProps<{
@@ -54,7 +50,6 @@ const props = defineProps<{
   headers: Header[]
 }>()
 
-const modeStore = useModeStore()
 const activityStore = useActivityStore()
 </script>
 
