@@ -2,11 +2,23 @@
   <v-container class="d-flex justify-center align-center">
     <v-row>
       <v-toolbar class="invisible-when-print px-2">
-        <v-btn @click="modeStore.mode = 'edit'"> 編輯模式 </v-btn
-        ><v-btn @click="modeStore.mode = 'print'" variant="tonal"> 列印模式 </v-btn></v-toolbar
+        <v-btn
+          @click="modeStore.mode = 'edit'"
+          :variant="modeStore.mode == 'edit' ? 'tonal' : undefined"
+        >
+          編輯模式 </v-btn
+        ><v-btn
+          @click="modeStore.mode = 'print'"
+          :variant="modeStore.mode == 'print' ? 'tonal' : undefined"
+        >
+          列印模式
+        </v-btn></v-toolbar
       >
       <v-col cols="3" v-if="modeStore.mode === 'edit'">123</v-col>
-      <v-col :cols="modeStore.mode === 'edit' ? 6 : 12">
+      <v-col
+        :cols="modeStore.mode === 'edit' ? 6 : 12"
+        :class="modeStore.mode === 'print' ? 'd-flex justify-center' : ''"
+      >
         <EditView v-if="modeStore.mode === 'edit'" :participant-list="items" :headers="headers" />
         <PrintView v-else :participant-list="items" :headers="headers" />
       </v-col>
