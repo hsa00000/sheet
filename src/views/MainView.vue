@@ -14,7 +14,7 @@
           列印模式
         </v-btn></v-toolbar
       >
-      <v-col cols="3" v-if="modeStore.mode === 'edit'">123</v-col>
+      <v-col cols="3" v-show="modeStore.mode === 'edit'">123</v-col>
       <v-col
         :cols="modeStore.mode === 'edit' ? 6 : 12"
         :class="modeStore.mode === 'print' ? 'd-flex justify-center' : ''"
@@ -22,7 +22,7 @@
         <EditView v-if="modeStore.mode === 'edit'" :participant-list="items" :headers="headers" />
         <PrintView v-else :participant-list="items" :headers="headers" />
       </v-col>
-      <v-col cols="3" v-if="modeStore.mode === 'edit'">
+      <v-col cols="3" v-show="modeStore.mode === 'edit'">
         <v-file-input label="選擇 csv 檔" @change="handleFileUpload"></v-file-input>
       </v-col>
     </v-row>
