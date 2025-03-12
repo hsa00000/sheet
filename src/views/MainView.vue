@@ -18,7 +18,7 @@
         <v-list-item>
           <template #prepend>
             <v-list-item-action start>
-              <v-checkbox-btn v-model="modeStore.food" label="用餐"></v-checkbox-btn>
+              <v-checkbox-btn v-model="modeStore.enableFood" label="用餐"></v-checkbox-btn>
             </v-list-item-action>
           </template>
         </v-list-item>
@@ -89,11 +89,13 @@ const baseHeaders: Header[] = [
 ]
 
 const headers = computed(() => {
-  return modeStore.food ? baseHeaders : baseHeaders.filter((header) => header.value !== 'food')
+  return modeStore.enableFood
+    ? baseHeaders
+    : baseHeaders.filter((header) => header.value !== 'food')
 })
 
 watchEffect(() => {
-  console.log('modeStore.food is', modeStore.food)
+  console.log('modeStore.food is', modeStore.enableFood)
 })
 </script>
 

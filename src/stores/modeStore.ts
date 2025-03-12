@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
 export const useModeStore = defineStore('mode', {
-  state: (): { mode: 'edit' | 'print'; food: boolean } => ({
+  state: (): { mode: 'edit' | 'print'; enableFood: boolean } => ({
     mode: 'edit',
-    food: false,
+    enableFood: false,
   }),
   actions: {},
 })
