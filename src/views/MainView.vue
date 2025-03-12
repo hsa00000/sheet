@@ -14,7 +14,15 @@
           列印模式
         </v-btn></v-toolbar
       >
-      <v-col cols="3" v-show="modeStore.mode === 'edit'">123</v-col>
+      <v-col cols="3" v-show="modeStore.mode === 'edit'">
+        <v-list-item>
+          <template #prepend>
+            <v-list-item-action start>
+              <v-checkbox-btn v-model="modeStore.food" label="用餐"></v-checkbox-btn>
+            </v-list-item-action>
+          </template>
+        </v-list-item>
+      </v-col>
       <v-col
         :cols="modeStore.mode === 'edit' ? 6 : 12"
         :class="modeStore.mode === 'print' ? 'd-flex justify-center' : ''"
@@ -31,13 +39,13 @@
 
 <script setup lang="ts">
 import type { Header, Participant } from '@/type/type'
-import { ref, type Ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import EditView from './EditView.vue'
 import { useModeStore } from '@/stores/modeStore'
 import PrintView from './PrintView.vue'
 import Papa from 'papaparse'
-const modeStore = useModeStore()
 
+const modeStore = useModeStore()
 const items = ref<Participant[]>([])
 const handleFileUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
@@ -53,33 +61,40 @@ const handleFileUpload = (event: Event) => {
       header: true,
       skipEmptyLines: true,
     })
-
     // **清理欄位名稱並轉換為 Participant 格式**
     items.value = result.data.map((row) => {
       const cleanedRow = Object.fromEntries(
         Object.entries(row as Record<string, unknown>).map(([key, value]) => [key.trim(), value]),
       )
-
       return {
         id: String(cleanedRow['職工/學號'] ?? ''),
         department: String(cleanedRow['單位'] ?? ''),
         name: String(cleanedRow['參加者'] ?? ''),
+        food: String(cleanedRow['提供用餐'] ?? ''),
       }
     })
-
     console.log('解析後的 items:', items.value)
   }
-
   reader.readAsArrayBuffer(file)
 }
 
-const headers: Ref<Header[]> = ref([
+// 原始 headers 定義
+const baseHeaders: Header[] = [
   { title: '#', value: 'index', width: '5px', align: 'center' },
   { title: '學號', value: 'id', width: '100px', align: 'center' },
   { title: '單位', value: 'department', width: '100px', align: 'center' },
   { title: '姓名', value: 'name', width: '100px', align: 'center' },
   { title: '簽到', value: 'sign', width: '100px', align: 'center' },
-])
+  { title: '用餐', value: 'food', width: '100px', align: 'center' },
+]
+
+const headers = computed(() => {
+  return modeStore.food ? baseHeaders : baseHeaders.filter((header) => header.value !== 'food')
+})
+
+watchEffect(() => {
+  console.log('modeStore.food is', modeStore.food)
+})
 </script>
 
 <style scoped>
