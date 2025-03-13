@@ -25,16 +25,15 @@
       </v-card-text>
 
       <v-data-table
-        border-collapse:
-        collapse
         :headers="props.headers"
         :items="props.participantList"
         v-model:sort-by="sortBy"
+        v-model:page="page"
         class="print-table row-height-26 text-center text-black"
         :items-per-page="itemsPerPage"
       >
         <template #[`item.index`]="{ index }">
-          {{ index + 1 }}
+          {{ (page - 1) * itemsPerPage + index + 1 }}
         </template>
       </v-data-table>
     </v-card>
@@ -45,11 +44,13 @@ import { useActivityStore } from '@/stores/activityStore'
 
 import type { Header, Participant } from '@/type/type'
 import { sortBy, itemsPerPage } from '@/const/const'
+import { ref } from 'vue'
 const props = defineProps<{
   participantList: Participant[]
   headers: Header[]
 }>()
 
+const page = ref(1)
 const activityStore = useActivityStore()
 </script>
 
