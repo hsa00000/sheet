@@ -32,8 +32,14 @@
         class="print-table row-height-26 text-center text-black"
         :items-per-page="itemsPerPage"
       >
+        <!-- Index column -->
         <template #[`item.index`]="{ index }">
           {{ (page - 1) * itemsPerPage + index + 1 }}
+        </template>
+
+        <!-- Editable columns -->
+        <template #[`item.name`]="{ item }">
+          <v-text-field v-model="item.name" hide-details></v-text-field>
         </template>
       </v-data-table>
     </v-card>
