@@ -17,6 +17,7 @@
       </v-toolbar>
 
       <v-col cols="3" v-show="modeStore.mode === 'edit'">
+        <!-- 用餐勾選 -->
         <v-list-item>
           <template #prepend>
             <v-list-item-action start>
@@ -24,8 +25,18 @@
             </v-list-item-action>
           </template>
         </v-list-item>
-      </v-col>
 
+        <!-- 新增空白頁數輸入 -->
+        <v-number-input
+          v-model="emptyPageNumberStore.emptyPageNumber"
+          label="新增空白頁數"
+          :min="0"
+          :step="1"
+          control-variant="default"
+          density="compact"
+          hide-details
+        />
+      </v-col>
       <v-col
         :cols="modeStore.mode === 'edit' ? 6 : 12"
         :class="modeStore.mode === 'print' ? 'd-flex justify-center' : ''"
@@ -55,9 +66,11 @@ import PrintView from './PrintView.vue'
 import Papa from 'papaparse'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
+import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
+const emptyPageNumberStore = useEmptyPageNumberStore()
 const uploadedFile = ref<File | null>(null)
 
 const newOutsider = ref('')

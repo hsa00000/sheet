@@ -20,7 +20,6 @@
         collapse
         :headers="headers"
         :items="pageItems"
-        v-model:sort-by="sortBy"
         class="print-table row-height-26 text-center text-black"
         :items-per-page="itemsPerPage"
       >
@@ -35,10 +34,11 @@
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
 
-import type { Header } from '@/type/type'
-import { sortBy, itemsPerPage } from '@/const/const'
+import type { Header, Participant } from '@/type/type'
+import { itemsPerPage } from '@/const/const'
 import { computed } from 'vue'
 import { useParticipantStore } from '@/stores/participantStore'
+import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 
 defineProps<{
   headers: Header[]
@@ -46,12 +46,32 @@ defineProps<{
 
 const activityStore = useActivityStore()
 const participantStore = useParticipantStore()
+const emptyPageNumberStore = useEmptyPageNumberStore()
+
 const paginatedItems = computed(() => {
-  const pages = []
-  const combined = participantStore.combinedList
+  const combined = [...participantStore.combinedList]
+
+  const blankCount =
+    Math.ceil(combined.length / 10) * 10 -
+    combined.length +
+    emptyPageNumberStore.emptyPageNumber * 10
+
+  for (let i = 0; i < blankCount; i++) {
+    combined.push({
+      id: '',
+      department: '',
+      name: '',
+      food: '',
+    } as Participant)
+  }
+
+  console.log('combined result is', combined)
+
+  const pages: Participant[][] = []
   for (let i = 0; i < combined.length; i += itemsPerPage) {
     pages.push(combined.slice(i, i + itemsPerPage))
   }
+
   return pages
 })
 </script>
