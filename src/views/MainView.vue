@@ -25,17 +25,6 @@
             </v-list-item-action>
           </template>
         </v-list-item>
-
-        <!-- 新增空白頁數輸入 -->
-        <v-number-input
-          v-model="emptyPageNumberStore.emptyPageNumber"
-          label="新增空白頁數"
-          :min="0"
-          :step="1"
-          control-variant="default"
-          density="compact"
-          hide-details
-        />
       </v-col>
       <v-col
         :cols="modeStore.mode === 'edit' ? 6 : 12"
@@ -46,13 +35,27 @@
       </v-col>
 
       <v-col cols="3" v-show="modeStore.mode === 'edit'">
-        <v-file-input v-model="uploadedFile" label="選擇 CSV 檔" accept=".csv" show-size />
-        <v-card class="mb-4">
-          <v-card-text>
-            <v-text-field v-model="newOutsider" label="新增校外人士" dense outlined hide-details />
-            <v-btn class="mt-2" color="primary" @click="addOutsider">新增</v-btn>
-          </v-card-text>
-        </v-card>
+        <v-file-input
+          prepend-icon=""
+          append-inner-icon="mdi-paperclip"
+          v-model="uploadedFile"
+          label="選擇 CSV 檔"
+          accept=".csv"
+          show-size
+        />
+        <v-text-field v-model="newOutsider" label="新增校外人士" hide-details class="mb-5">
+          <template #append-inner>
+            <v-btn variant="text" @click="addOutsider" :disabled="!newOutsider"> 新增 </v-btn>
+          </template>
+        </v-text-field>
+        <v-number-input
+          v-model="emptyPageNumberStore.emptyPageNumber"
+          label="新增空白頁數"
+          :min="0"
+          :step="1"
+          control-variant="default"
+          hide-details
+        />
       </v-col>
     </v-row>
   </v-container>
