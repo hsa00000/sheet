@@ -37,15 +37,7 @@
       <v-col cols="3" v-show="modeStore.mode === 'edit'">
         <v-file-input v-model="uploadedFile" label="選擇 CSV 檔" accept=".csv" show-size />
         <v-card class="mb-4">
-          <v-card-title>校外人士清單</v-card-title>
           <v-card-text>
-            <v-list>
-              <v-list-item v-for="(item, index) in participantStore.outsider" :key="index">
-                <v-list-item-content>
-                  <v-list-item-title>{{ item }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
             <v-text-field v-model="newOutsider" label="新增校外人士" dense outlined hide-details />
             <v-btn class="mt-2" color="primary" @click="addOutsider">新增</v-btn>
           </v-card-text>
