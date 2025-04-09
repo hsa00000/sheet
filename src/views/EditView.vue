@@ -27,7 +27,6 @@
       <v-data-table
         :headers="tableHeaders"
         :items="participantStore.combinedList"
-        v-model:sort-by="sortBy"
         v-model:page="page"
         class="print-table row-height-26 text-center text-black"
         :items-per-page="itemsPerPage"
@@ -57,9 +56,13 @@
           <v-text-field v-model="item.food" hide-details></v-text-field>
         </template>
 
-        <!-- Delete button column -->
+        <!-- button column -->
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="tonal" @click="deleteParticipant(item)">刪除</v-btn>
+          <div class="d-flex flex-column ga-1">
+            <v-btn size="x-small" @click="moveUp(item)">上移</v-btn>
+            <v-btn size="x-small" @click="moveDown(item)">下移</v-btn>
+            <v-btn size="x-small" variant="tonal" @click="deleteParticipant(item)">刪除</v-btn>
+          </div>
         </template>
       </v-data-table>
     </v-card>
@@ -69,7 +72,7 @@
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
 import type { Header, Participant } from '@/type/type'
-import { sortBy, itemsPerPage } from '@/const/const'
+import { itemsPerPage } from '@/const/const'
 import { ref, computed } from 'vue'
 import { useParticipantStore } from '@/stores/participantStore'
 
@@ -93,6 +96,23 @@ const deleteParticipant = (participant: Participant) => {
   const index = participantStore.combinedList.findIndex((p) => p === participant)
   if (index !== -1) {
     participantStore.deleteByCombinedIndex(index)
+  }
+}
+
+const moveUp = (participant: Participant) => {
+  const index = participantStore.combinedList.findIndex((p) => p === participant)
+  const participantListIndex = index - participantStore.outsider.length
+  if (participantListIndex >= 0) {
+    participantStore.moveUpInParticipantList(participantListIndex)
+  }
+  console.log('participantStore.combinedList is', participantStore.combinedList)
+}
+
+const moveDown = (participant: Participant) => {
+  const index = participantStore.combinedList.findIndex((p) => p === participant)
+  const participantListIndex = index - participantStore.outsider.length
+  if (participantListIndex >= 0) {
+    participantStore.moveDownInParticipantList(participantListIndex)
   }
 }
 </script>

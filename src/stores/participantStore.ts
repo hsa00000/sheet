@@ -22,5 +22,20 @@ export const useParticipantStore = defineStore('participant', {
         }
       }
     },
+    moveUpInParticipantList(index: number) {
+      if (index > 0 && index < this.participantList.length) {
+        const temp = this.participantList[index]
+        this.participantList[index] = this.participantList[index - 1]
+        this.participantList[index - 1] = temp
+      }
+    },
+
+    moveDownInParticipantList(index: number) {
+      if (index >= 0 && index < this.participantList.length - 1) {
+        const temp = this.participantList[index]
+        this.participantList[index] = this.participantList[index + 1]
+        this.participantList[index + 1] = temp
+      }
+    },
   },
 })
