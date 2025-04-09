@@ -12,6 +12,9 @@ export const useParticipantStore = defineStore('participant', {
     },
   },
   actions: {
+    isOutsider(participant: Participant): boolean {
+      return this.outsider.includes(participant)
+    },
     deleteByCombinedIndex(index: number): void {
       if (index < this.outsider.length) {
         this.outsider.splice(index, 1)
