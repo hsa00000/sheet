@@ -30,8 +30,8 @@
         :cols="modeStore.mode === 'edit' ? 6 : 12"
         :class="modeStore.mode === 'print' ? 'd-flex justify-center' : ''"
       >
-        <EditView v-if="modeStore.mode === 'edit'" :participant-list="items" :headers="headers" />
-        <PrintView v-else :participant-list="items" :headers="headers" />
+        <EditView v-if="modeStore.mode === 'edit'" :headers="headers" />
+        <PrintView v-else :headers="headers" />
       </v-col>
 
       <v-col cols="3" v-show="modeStore.mode === 'edit'">
@@ -43,15 +43,15 @@
 
 <script setup lang="ts">
 import { ref, computed, watchEffect, watch } from 'vue'
-import type { Header, Participant } from '@/type/type'
+import type { Header } from '@/type/type'
 import EditView from './EditView.vue'
 import PrintView from './PrintView.vue'
 import Papa from 'papaparse'
 import { useModeStore } from '@/stores/modeStore'
+import { useParticipantStore } from '@/stores/participantStore'
 
 const modeStore = useModeStore()
-
-const items = ref<Participant[]>([])
+const participantStore = useParticipantStore()
 const uploadedFile = ref<File | null>(null)
 
 watch(uploadedFile, (file) => {
@@ -67,7 +67,7 @@ watch(uploadedFile, (file) => {
       skipEmptyLines: true,
     })
 
-    items.value = result.data.map((row) => {
+    participantStore.participantList = result.data.map((row) => {
       const cleanedRow = Object.fromEntries(
         Object.entries(row as Record<string, unknown>).map(([key, value]) => [key.trim(), value]),
       )
@@ -79,7 +79,7 @@ watch(uploadedFile, (file) => {
       }
     })
 
-    console.log('解析後的 items:', items.value)
+    console.log('解析後的 items:', participantStore.participantList)
   }
   reader.readAsArrayBuffer(file)
 })

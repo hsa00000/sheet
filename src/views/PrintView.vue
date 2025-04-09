@@ -35,20 +35,21 @@
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
 
-import type { Header, Participant } from '@/type/type'
+import type { Header } from '@/type/type'
 import { sortBy, itemsPerPage } from '@/const/const'
 import { computed } from 'vue'
-const props = defineProps<{
-  participantList: Participant[]
+import { useParticipantStore } from '@/stores/participantStore'
+
+defineProps<{
   headers: Header[]
 }>()
 
 const activityStore = useActivityStore()
-
+const participantStore = useParticipantStore()
 const paginatedItems = computed(() => {
   const pages = []
-  for (let i = 0; i < props.participantList.length; i += itemsPerPage) {
-    pages.push(props.participantList.slice(i, i + itemsPerPage))
+  for (let i = 0; i < participantStore.participantList.length; i += itemsPerPage) {
+    pages.push(participantStore.participantList.slice(i, i + itemsPerPage))
   }
   return pages
 })

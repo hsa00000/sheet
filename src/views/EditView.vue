@@ -26,7 +26,7 @@
 
       <v-data-table
         :headers="tableHeaders"
-        :items="participantList"
+        :items="participantStore.participantList"
         v-model:sort-by="sortBy"
         v-model:page="page"
         class="print-table row-height-26 text-center text-black"
@@ -37,14 +37,29 @@
           {{ (page - 1) * itemsPerPage + index + 1 }}
         </template>
 
+        <!-- Editable id column -->
+        <template #[`item.id`]="{ item }">
+          <v-text-field v-model="item.id" hide-details></v-text-field>
+        </template>
+
+        <!-- Editable department column -->
+        <template #[`item.department`]="{ item }">
+          <v-text-field v-model="item.department" hide-details></v-text-field>
+        </template>
+
         <!-- Editable name column -->
         <template #[`item.name`]="{ item }">
           <v-text-field v-model="item.name" hide-details></v-text-field>
         </template>
 
+        <!-- Editable food column -->
+        <template #[`item.food`]="{ item }">
+          <v-text-field v-model="item.food" hide-details></v-text-field>
+        </template>
+
         <!-- Delete button column -->
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="tonal" @click="deleteParticipant(item)"> 刪除 </v-btn>
+          <v-btn variant="tonal" @click="deleteParticipant(item)">刪除</v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -56,14 +71,15 @@ import { useActivityStore } from '@/stores/activityStore'
 import type { Header, Participant } from '@/type/type'
 import { sortBy, itemsPerPage } from '@/const/const'
 import { ref, computed } from 'vue'
+import { useParticipantStore } from '@/stores/participantStore'
 
 const props = defineProps<{
-  participantList: Participant[]
   headers: Header[]
 }>()
 
 const page = ref(1)
 const activityStore = useActivityStore()
+const participantStore = useParticipantStore()
 
 // Computed headers to add a delete column dynamically
 const tableHeaders = computed(() => [
@@ -73,9 +89,9 @@ const tableHeaders = computed(() => [
 
 // Function to delete a participant
 const deleteParticipant = (participant: Participant) => {
-  const index = props.participantList.findIndex((p) => p === participant)
+  const index = participantStore.participantList.findIndex((p) => p === participant)
   if (index !== -1) {
-    props.participantList.splice(index, 1)
+    participantStore.participantList.splice(index, 1)
   }
 }
 </script>
