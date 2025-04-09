@@ -1,5 +1,6 @@
 <template>
   <v-card variant="text">
+    <v-card-title class="no-print d-flex justify-center">直接使用 Chrome 列印即可</v-card-title>
     <v-card
       v-for="(pageItems, pageIndex) in paginatedItems"
       :key="pageIndex"
@@ -115,5 +116,11 @@ const paginatedItems = computed(() => {
 :deep() .v-table .v-table__wrapper > table > thead > tr > th:not(:last-child),
 :deep() .v-table .v-table__wrapper > table > tbody > tr > td:not(:last-child) {
   border-right: 1px solid #000 !important;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }
 </style>
