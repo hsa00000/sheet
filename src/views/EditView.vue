@@ -44,9 +44,7 @@
 
         <!-- Delete button column -->
         <template #[`item.actions`]="{ item }">
-          <v-btn icon color="red" @click="deleteParticipant(item)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+          <v-btn variant="tonal" @click="deleteParticipant(item)"> 刪除 </v-btn>
         </template>
       </v-data-table>
     </v-card>
