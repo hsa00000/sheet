@@ -58,10 +58,10 @@
 
         <!-- button column -->
         <template #[`item.actions`]="{ item }">
-          <div class="d-flex flex-column ga-1">
-            <v-btn size="x-small" @click="moveUp(item)">上移</v-btn>
-            <v-btn size="x-small" @click="moveDown(item)">下移</v-btn>
-            <v-btn size="x-small" variant="tonal" @click="deleteParticipant(item)">刪除</v-btn>
+          <div class="d-flex flex-row justify-center ga-1">
+            <v-btn variant="outlined" @click="deleteParticipant(item)">刪除</v-btn>
+            <v-btn variant="outlined" @click="moveUp(item)">上移</v-btn>
+            <v-btn variant="outlined" @click="moveDown(item)">下移</v-btn>
           </div>
         </template>
       </v-data-table>
@@ -87,7 +87,7 @@ const participantStore = useParticipantStore()
 // Computed headers to add a delete column dynamically
 const tableHeaders = computed(() => [
   ...props.headers,
-  { title: '操作', key: 'actions', align: 'center' as const, width: '5px', sortable: false },
+  { title: '操作', key: 'actions', align: 'center' as const, width: '100px', sortable: false },
 ])
 
 // Function to delete a participant
