@@ -26,7 +26,7 @@
 
       <v-data-table
         :headers="tableHeaders"
-        :items="participantStore.participantList"
+        :items="participantStore.combinedList"
         v-model:sort-by="sortBy"
         v-model:page="page"
         class="print-table row-height-26 text-center text-black"
@@ -88,10 +88,11 @@ const tableHeaders = computed(() => [
 ])
 
 // Function to delete a participant
+
 const deleteParticipant = (participant: Participant) => {
-  const index = participantStore.participantList.findIndex((p) => p === participant)
+  const index = participantStore.combinedList.findIndex((p) => p === participant)
   if (index !== -1) {
-    participantStore.participantList.splice(index, 1)
+    participantStore.deleteByCombinedIndex(index)
   }
 }
 </script>

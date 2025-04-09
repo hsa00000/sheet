@@ -36,6 +36,20 @@
 
       <v-col cols="3" v-show="modeStore.mode === 'edit'">
         <v-file-input v-model="uploadedFile" label="選擇 CSV 檔" accept=".csv" show-size />
+        <v-card class="mb-4">
+          <v-card-title>校外人士清單</v-card-title>
+          <v-card-text>
+            <v-list>
+              <v-list-item v-for="(item, index) in participantStore.outsider" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title>{{ item }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-text-field v-model="newOutsider" label="新增校外人士" dense outlined hide-details />
+            <v-btn class="mt-2" color="primary" @click="addOutsider">新增</v-btn>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -53,6 +67,24 @@ import { useParticipantStore } from '@/stores/participantStore'
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
 const uploadedFile = ref<File | null>(null)
+
+const newOutsider = ref('')
+
+const addOutsider = () => {
+  const name = newOutsider.value.trim()
+  if (!name) return
+
+  const exists = participantStore.outsider.some((p) => p.name === name)
+  if (!exists) {
+    participantStore.outsider.push({
+      id: '',
+      department: '校外人士',
+      name,
+      food: '無須用餐',
+    })
+    newOutsider.value = ''
+  }
+}
 
 watch(uploadedFile, (file) => {
   if (!file) return

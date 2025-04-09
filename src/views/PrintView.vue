@@ -48,8 +48,9 @@ const activityStore = useActivityStore()
 const participantStore = useParticipantStore()
 const paginatedItems = computed(() => {
   const pages = []
-  for (let i = 0; i < participantStore.participantList.length; i += itemsPerPage) {
-    pages.push(participantStore.participantList.slice(i, i + itemsPerPage))
+  const combined = participantStore.combinedList
+  for (let i = 0; i < combined.length; i += itemsPerPage) {
+    pages.push(combined.slice(i, i + itemsPerPage))
   }
   return pages
 })
