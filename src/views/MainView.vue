@@ -28,8 +28,6 @@ watchEffect(() => {
 onMounted(async () => {
   const saved = await loadFile('lastCsvFile')
   if (saved) {
-    console.log('[Loaded CSV from IndexedDB]', saved)
-
     const result = Papa.parse(saved, {
       header: true,
       skipEmptyLines: true,
@@ -46,10 +44,6 @@ onMounted(async () => {
         food: String(cleanedRow['提供用餐'] ?? ''),
       }
     })
-
-    console.log('[Participants loaded from saved CSV]', participantStore.participantList)
-  } else {
-    console.log('[No saved CSV file found]')
   }
 })
 </script>
