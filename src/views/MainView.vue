@@ -14,10 +14,10 @@
 
 <script setup lang="ts">
 import { watchEffect, onMounted } from 'vue'
-import Papa from 'papaparse'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
 import { loadFile } from '@/db/db'
+import { parseCsvToParticipantList } from '@/script/parse'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
@@ -29,22 +29,7 @@ watchEffect(() => {
 onMounted(async () => {
   const saved = await loadFile('lastCsvFile')
   if (saved) {
-    const result = Papa.parse(saved, {
-      header: true,
-      skipEmptyLines: true,
-    })
-
-    participantStore.participantList = result.data.map((row) => {
-      const cleanedRow = Object.fromEntries(
-        Object.entries(row as Record<string, unknown>).map(([key, value]) => [key.trim(), value]),
-      )
-      return {
-        id: String(cleanedRow['職工/學號'] ?? ''),
-        department: String(cleanedRow['單位'] ?? ''),
-        name: String(cleanedRow['參加者'] ?? ''),
-        food: String(cleanedRow['提供用餐'] ?? ''),
-      }
-    })
+    participantStore.participantList = parseCsvToParticipantList(saved)
   }
 })
 </script>
