@@ -11,86 +11,84 @@
   </v-col>
   <v-col cols="6">
     <v-card>
-      <v-card class="print-page">
-        <v-card-text>
-          <v-text-field
-            v-model="activityStore.name"
-            label="活動名稱"
-            variant="underlined"
-            dense
-          ></v-text-field>
+      <v-card-text>
+        <v-text-field
+          v-model="activityStore.name"
+          label="活動名稱"
+          variant="underlined"
+          dense
+        ></v-text-field>
 
-          <v-text-field
-            v-model="activityStore.period"
-            label="活動日期"
-            variant="underlined"
-            dense
-          ></v-text-field>
+        <v-text-field
+          v-model="activityStore.period"
+          label="活動日期"
+          variant="underlined"
+          dense
+        ></v-text-field>
 
-          <v-text-field
-            v-model="activityStore.location"
-            label="活動地點"
-            variant="underlined"
-            dense
-          ></v-text-field>
-        </v-card-text>
+        <v-text-field
+          v-model="activityStore.location"
+          label="活動地點"
+          variant="underlined"
+          dense
+        ></v-text-field>
+      </v-card-text>
 
-        <v-data-table
-          :headers="tableHeaders"
-          :items="participantStore.combinedList"
-          v-model:page="page"
-          class="print-table row-height-26 text-center text-black"
-          :items-per-page="itemsPerPage"
-          no-data-text="請先選擇 csv 檔"
-          items-per-page-text="每頁顯示數量"
-        >
-          <!-- Index column -->
-          <template #[`item.index`]="{ index }">
-            {{ (page - 1) * itemsPerPage + index + 1 }}
-          </template>
+      <v-data-table
+        :headers="tableHeaders"
+        :items="participantStore.combinedList"
+        v-model:page="page"
+        class="print-table row-height-26 text-center text-black"
+        :items-per-page="itemsPerPage"
+        no-data-text="請先選擇 csv 檔"
+        items-per-page-text="每頁顯示數量"
+      >
+        <!-- Index column -->
+        <template #[`item.index`]="{ index }">
+          {{ (page - 1) * itemsPerPage + index + 1 }}
+        </template>
 
-          <!-- Editable id column -->
-          <template #[`item.id`]="{ item }">
-            <v-text-field v-model="item.id" hide-details></v-text-field>
-          </template>
+        <!-- Editable id column -->
+        <template #[`item.id`]="{ item }">
+          <v-text-field v-model="item.id" hide-details></v-text-field>
+        </template>
 
-          <!-- Editable department column -->
-          <template #[`item.department`]="{ item }">
-            <v-text-field v-model="item.department" hide-details></v-text-field>
-          </template>
+        <!-- Editable department column -->
+        <template #[`item.department`]="{ item }">
+          <v-text-field v-model="item.department" hide-details></v-text-field>
+        </template>
 
-          <!-- Editable name column -->
-          <template #[`item.name`]="{ item }">
-            <v-text-field v-model="item.name" hide-details></v-text-field>
-          </template>
+        <!-- Editable name column -->
+        <template #[`item.name`]="{ item }">
+          <v-text-field v-model="item.name" hide-details></v-text-field>
+        </template>
 
-          <!-- Editable food column -->
-          <template #[`item.food`]="{ item }">
-            <v-text-field v-model="item.food" hide-details></v-text-field>
-          </template>
+        <!-- Editable food column -->
+        <template #[`item.food`]="{ item }">
+          <v-text-field v-model="item.food" hide-details></v-text-field>
+        </template>
 
-          <!-- button column -->
-          <template #[`item.actions`]="{ item }">
-            <div class="d-flex flex-row justify-center ga-1">
-              <v-btn variant="outlined" @click="deleteParticipant(item)">刪除</v-btn>
-              <v-btn
-                variant="outlined"
-                @click="moveUp(item)"
-                :disabled="participantStore.isOutsider(item)"
-              >
-                上移
-              </v-btn>
-              <v-btn
-                variant="outlined"
-                @click="moveDown(item)"
-                :disabled="participantStore.isOutsider(item)"
-              >
-                下移
-              </v-btn>
-            </div>
-          </template>
-        </v-data-table>
-      </v-card>
+        <!-- button column -->
+        <template #[`item.actions`]="{ item }">
+          <div class="d-flex flex-row justify-center ga-1">
+            <v-btn variant="outlined" @click="deleteParticipant(item)">刪除</v-btn>
+            <v-btn
+              variant="outlined"
+              @click="moveUp(item)"
+              :disabled="participantStore.isOutsider(item)"
+            >
+              上移
+            </v-btn>
+            <v-btn
+              variant="outlined"
+              @click="moveDown(item)"
+              :disabled="participantStore.isOutsider(item)"
+            >
+              下移
+            </v-btn>
+          </div>
+        </template>
+      </v-data-table>
     </v-card>
   </v-col>
   <v-col cols="3">

@@ -1,38 +1,44 @@
 <template>
-  <v-col cols="12" class="d-flex justify-center">
-    <v-card variant="text">
-      <v-card-title class="no-print d-flex justify-center">直接使用 Chrome 列印即可</v-card-title>
-      <v-card
-        v-for="(pageItems, pageIndex) in paginatedItems"
-        :key="pageIndex"
-        class="print-page"
-        variant="text"
-      >
-        <v-card-text class="text-body-1 text-center">
-          <p class="text-h3 font-weight-bold">{{ `${activityStore.name}簽到表` }}</p>
-        </v-card-text>
-        <v-card-text class="text-body-1">
-          <p class="text-h5"><span>活動名稱：</span>{{ activityStore.name }}</p>
-          <p class="text-h5"><span>活動期間：</span>{{ activityStore.period }}</p>
-          <p class="text-h5"><span>活動地點：</span>{{ activityStore.location }}</p>
-        </v-card-text>
+  <v-container>
+    <v-row class="d-flex justify-center">
+      <v-col cols="6" class="print-full-width">
+        <v-card variant="text">
+          <v-card-title class="no-print d-flex justify-center"
+            >直接使用 Chrome 列印即可</v-card-title
+          >
+          <v-card
+            v-for="(pageItems, pageIndex) in paginatedItems"
+            :key="pageIndex"
+            class="print-page"
+            variant="text"
+          >
+            <v-card-text class="text-body-1 text-center">
+              <p class="text-h3 font-weight-bold">{{ `${activityStore.name}簽到表` }}</p>
+            </v-card-text>
+            <v-card-text class="text-body-1">
+              <p class="text-h5"><span>活動名稱：</span>{{ activityStore.name }}</p>
+              <p class="text-h5"><span>活動期間：</span>{{ activityStore.period }}</p>
+              <p class="text-h5"><span>活動地點：</span>{{ activityStore.location }}</p>
+            </v-card-text>
 
-        <v-data-table
-          border-collapse:
-          collapse
-          :headers="headers"
-          :items="pageItems"
-          class="print-table row-height-26 text-center text-black"
-          :items-per-page="itemsPerPage"
-        >
-          <template #[`item.index`]="{ index }">
-            {{ pageIndex * itemsPerPage + index + 1 }}
-          </template>
-          <template #bottom> </template>
-        </v-data-table>
-      </v-card>
-    </v-card>
-  </v-col>
+            <v-data-table
+              border-collapse:
+              collapse
+              :headers="headers"
+              :items="pageItems"
+              class="print-table row-height-26 text-center text-black"
+              :items-per-page="itemsPerPage"
+            >
+              <template #[`item.index`]="{ index }">
+                {{ pageIndex * itemsPerPage + index + 1 }}
+              </template>
+              <template #bottom> </template>
+            </v-data-table>
+          </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
@@ -77,14 +83,6 @@ const paginatedItems = computed(() => {
 
 <style scoped>
 /* Print page layout */
-.print-page {
-  width: 210mm; /* A4 width */
-  height: 280mm; /* A4 height */
-  padding-left: 4mm; /* Adjust as needed */
-  padding-right: 4mm; /* Adjust as needed */
-  box-sizing: border-box;
-  page-break-after: always; /* Ensure page breaks when printing */
-}
 
 /* Table font size */
 .v-data-table,
@@ -119,6 +117,18 @@ const paginatedItems = computed(() => {
 @media print {
   .no-print {
     display: none !important;
+  }
+  .print-page {
+    width: 210mm; /* A4 width */
+    height: 280mm; /* A4 height */
+    padding-left: 4mm; /* Adjust as needed */
+    padding-right: 4mm; /* Adjust as needed */
+    box-sizing: border-box;
+    page-break-after: always; /* Ensure page breaks when printing */
+  }
+  .print-full-width {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
   }
 }
 </style>
