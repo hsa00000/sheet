@@ -121,41 +121,4 @@ const paginatedItems = computed(() => {
     display: none !important;
   }
 }
-
-.print-page {
-  width: 210mm;
-  height: 297mm;
-  padding-left: 4mm;
-  padding-right: 4mm;
-  box-sizing: border-box;
-  page-break-after: always;
-}
-
-:deep() .v-table .v-table__wrapper > table {
-  border: 2px solid #000 !important;
-  border-collapse: collapse !important;
-}
-
-:deep() .v-table .v-table__wrapper > table > thead > tr > th,
-:deep() .v-table .v-table__wrapper > table > tbody > tr > td {
-  color: #000 !important;
-  border: 1px solid #000 !important;
-  padding: 4px;
-}
-
-:deep() .v-table .v-table__wrapper > table > thead > tr > th:not(:last-child),
-:deep() .v-table .v-table__wrapper > table > tbody > tr > td:not(:last-child) {
-  border-right: 1px solid #000 !important;
-}
-
-@media print {
-  * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .invisible-when-print {
-    display: none;
-  }
-}
 </style>
