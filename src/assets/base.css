@@ -84,3 +84,24 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.v-data-table.row-height-26 tr,
+.v-data-table.row-height-26 td {
+  height: 70px !important;
+}
+
+.v-table .v-table__wrapper > table {
+  border: 2px solid #000 !important;
+  border-collapse: collapse !important;
+}
+
+.v-table .v-table__wrapper > table > thead > tr > th,
+.v-table .v-table__wrapper > table > tbody > tr > td {
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  padding: 4px;
+}
+
+.v-table .v-table__wrapper > table > thead > tr > th:not(:last-child),
+.v-table .v-table__wrapper > table > tbody > tr > td:not(:last-child) {
+  border-right: 1px solid #000 !important;
+}
