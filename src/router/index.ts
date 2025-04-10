@@ -11,8 +11,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: EditView,
+      redirect: '/edit',
     },
     {
       path: '/edit',
