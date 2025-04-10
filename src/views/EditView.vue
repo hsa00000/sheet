@@ -30,6 +30,8 @@
         v-model:page="page"
         class="print-table row-height-26 text-center text-black"
         :items-per-page="itemsPerPage"
+        no-data-text="請先選擇 csv 檔"
+        items-per-page-text="每頁顯示數量"
       >
         <!-- Index column -->
         <template #[`item.index`]="{ index }">
