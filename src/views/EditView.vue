@@ -119,7 +119,7 @@
 <script setup lang="ts">
 import { useActivityStore } from '@/stores/activityStore'
 import type { Participant } from '@/type/type'
-import { itemsPerPage } from '@/const/const'
+import { DEPARTMENT_ORDER, itemsPerPage } from '@/const/const'
 import { ref, computed, watch } from 'vue'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useModeStore } from '@/stores/modeStore'
@@ -202,9 +202,9 @@ watch(uploadedFile, async (file) => {
       skipEmptyLines: true,
     })
 
-    participantStore.participantList = result.data.map((row) => {
+    const mappedList: Participant[] = (result.data as Record<string, unknown>[]).map((row) => {
       const cleanedRow = Object.fromEntries(
-        Object.entries(row as Record<string, unknown>).map(([key, value]) => [key.trim(), value]),
+        Object.entries(row).map(([key, value]) => [key.trim(), value]),
       )
       return {
         id: String(cleanedRow['職工/學號'] ?? ''),
@@ -213,6 +213,14 @@ watch(uploadedFile, async (file) => {
         food: String(cleanedRow['提供用餐'] ?? ''),
       }
     })
+
+    mappedList.sort((a, b) => {
+      const indexA = DEPARTMENT_ORDER.indexOf(a.department)
+      const indexB = DEPARTMENT_ORDER.indexOf(b.department)
+      return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
+    })
+
+    participantStore.participantList = mappedList
   }
   reader.readAsArrayBuffer(file)
 })
