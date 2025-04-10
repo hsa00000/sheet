@@ -1,7 +1,7 @@
 <template>
   <v-container class="d-flex justify-center align-center">
     <v-row>
-      <v-toolbar class="invisible-when-print px-2">
+      <v-toolbar class="no-print px-2">
         <v-btn to="/edit"> 編輯模式 </v-btn>
         <v-btn to="/print"> 列印模式 </v-btn>
         <v-btn to="/guide"> 使用教學 </v-btn>
@@ -50,15 +50,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.print-page {
-  width: 210mm;
-  height: 297mm;
-  padding-left: 4mm;
-  padding-right: 4mm;
-  box-sizing: border-box;
-  page-break-after: always;
-}
-
 :deep(.v-data-table.row-height-26 tr),
 :deep(.v-data-table.row-height-26 td) {
   height: 70px !important;
@@ -82,12 +73,7 @@ onMounted(async () => {
 }
 
 @media print {
-  * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .invisible-when-print {
+  .no-print {
     display: none;
   }
 }

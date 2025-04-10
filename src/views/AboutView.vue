@@ -36,9 +36,6 @@
 a {
   color: #1976d2;
 }
-a:hover {
-  text-decoration: none;
-}
 .vue-logo {
   height: 28px;
 }
