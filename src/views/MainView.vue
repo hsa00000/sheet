@@ -5,6 +5,7 @@
         <v-btn to="/edit"> 編輯模式 </v-btn>
         <v-btn to="/print"> 列印模式 </v-btn>
         <v-btn to="/guide"> 使用教學 </v-btn>
+        <v-btn to="/about"> 關於本站 </v-btn>
       </v-toolbar>
       <RouterView />
     </v-row>
