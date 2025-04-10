@@ -3,142 +3,34 @@
     <v-row>
       <v-toolbar class="invisible-when-print px-2">
         <v-btn
+          to="/edit"
           @click="modeStore.mode = 'edit'"
           :variant="modeStore.mode == 'edit' ? 'tonal' : undefined"
         >
           編輯模式
         </v-btn>
         <v-btn
+          to="/print"
           @click="modeStore.mode = 'print'"
           :variant="modeStore.mode == 'print' ? 'tonal' : undefined"
         >
           列印模式
         </v-btn>
       </v-toolbar>
-
-      <v-col cols="3" v-show="modeStore.mode === 'edit'">
-        <!-- 用餐勾選 -->
-        <v-list-item>
-          <template #prepend>
-            <v-list-item-action start>
-              <v-checkbox-btn v-model="modeStore.enableFood" label="用餐" />
-            </v-list-item-action>
-          </template>
-        </v-list-item>
-      </v-col>
-      <v-col
-        :cols="modeStore.mode === 'edit' ? 6 : 12"
-        :class="modeStore.mode === 'print' ? 'd-flex justify-center' : ''"
-      >
-        <EditView v-if="modeStore.mode === 'edit'" :headers="headers" />
-        <PrintView v-else :headers="headers" />
-      </v-col>
-
-      <v-col cols="3" v-show="modeStore.mode === 'edit'">
-        <v-file-input
-          prepend-icon=""
-          append-inner-icon="mdi-paperclip"
-          v-model="uploadedFile"
-          label="選擇 CSV 檔"
-          accept=".csv"
-          show-size
-        />
-        <v-text-field v-model="newOutsider" label="新增校外人士" hide-details class="mb-5">
-          <template #append-inner>
-            <v-btn variant="text" @click="addOutsider" :disabled="!newOutsider"> 新增 </v-btn>
-          </template>
-        </v-text-field>
-        <v-number-input
-          v-model="emptyPageNumberStore.emptyPageNumber"
-          label="額外空白簽到頁數"
-          :min="0"
-          :step="1"
-          control-variant="default"
-          hide-details
-        />
-      </v-col>
+      <RouterView />
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect, watch, onMounted } from 'vue'
-import type { Header } from '@/type/type'
-import EditView from './EditView.vue'
-import PrintView from './PrintView.vue'
+import { watchEffect, onMounted } from 'vue'
 import Papa from 'papaparse'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
-import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
-import { loadFile, saveFile } from '@/db/db'
+import { loadFile } from '@/db/db'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
-const emptyPageNumberStore = useEmptyPageNumberStore()
-const uploadedFile = ref<File | null>(null)
-
-const newOutsider = ref('')
-
-const addOutsider = () => {
-  const name = newOutsider.value.trim()
-  if (!name) return
-
-  const exists = participantStore.outsider.some((p) => p.name === name)
-  if (!exists) {
-    participantStore.outsider.push({
-      id: '',
-      department: '校外人士',
-      name,
-      food: '無須用餐',
-    })
-    newOutsider.value = ''
-  }
-}
-
-watch(uploadedFile, async (file) => {
-  if (!file) return
-  const reader = new FileReader()
-  reader.onload = async () => {
-    const uint8Array = new Uint8Array(reader.result as ArrayBuffer)
-    const decoder = new TextDecoder('big5')
-    const text = decoder.decode(uint8Array)
-
-    await saveFile('lastCsvFile', text) // 儲存使用者上傳的內容
-
-    const result = Papa.parse(text, {
-      header: true,
-      skipEmptyLines: true,
-    })
-
-    participantStore.participantList = result.data.map((row) => {
-      const cleanedRow = Object.fromEntries(
-        Object.entries(row as Record<string, unknown>).map(([key, value]) => [key.trim(), value]),
-      )
-      return {
-        id: String(cleanedRow['職工/學號'] ?? ''),
-        department: String(cleanedRow['單位'] ?? ''),
-        name: String(cleanedRow['參加者'] ?? ''),
-        food: String(cleanedRow['提供用餐'] ?? ''),
-      }
-    })
-  }
-  reader.readAsArrayBuffer(file)
-})
-
-const baseHeaders: Header[] = [
-  { title: '#', value: 'index', width: '5px', align: 'center' },
-  { title: '學號', value: 'id', width: '100px', align: 'center' },
-  { title: '單位', value: 'department', width: '100px', align: 'center' },
-  { title: '姓名', value: 'name', width: '100px', align: 'center' },
-  { title: '簽到', value: 'sign', width: '100px', align: 'center' },
-  { title: '用餐', value: 'food', width: '100px', align: 'center' },
-]
-
-const headers = computed(() => {
-  return modeStore.enableFood
-    ? baseHeaders
-    : baseHeaders.filter((header) => header.value !== 'food')
-})
 
 watchEffect(() => {
   console.log('modeStore.food is', modeStore.enableFood)
