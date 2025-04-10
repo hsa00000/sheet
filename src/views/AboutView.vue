@@ -24,13 +24,19 @@
             />
             <span class="text-body-1 font-weight-bold ms-2">Vue 3</span>
           </div>
+
+          <p class="text-caption text-grey mt-6">上次更新：{{ buildDate }}</p>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
-
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const buildDate = new Date(BUILD_DATE).toLocaleDateString('zh-TW', {
+  timeZone: 'Asia/Taipei',
+  dateStyle: 'long',
+})
+</script>
 
 <style scoped>
 a {
