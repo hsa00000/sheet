@@ -18,6 +18,11 @@ const router = createRouter({
       name: 'print',
       component: () => import('../views/PrintView.vue'),
     },
+    {
+      path: '/guide',
+      name: 'guide',
+      component: () => import('../views/GuideView.vue'),
+    },
   ],
 })
 

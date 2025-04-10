@@ -2,20 +2,9 @@
   <v-container class="d-flex justify-center align-center">
     <v-row>
       <v-toolbar class="invisible-when-print px-2">
-        <v-btn
-          to="/edit"
-          @click="modeStore.mode = 'edit'"
-          :variant="modeStore.mode == 'edit' ? 'tonal' : undefined"
-        >
-          編輯模式
-        </v-btn>
-        <v-btn
-          to="/print"
-          @click="modeStore.mode = 'print'"
-          :variant="modeStore.mode == 'print' ? 'tonal' : undefined"
-        >
-          列印模式
-        </v-btn>
+        <v-btn to="/edit"> 編輯模式 </v-btn>
+        <v-btn to="/print"> 列印模式 </v-btn>
+        <v-btn to="/guide"> 使用教學 </v-btn>
       </v-toolbar>
       <RouterView />
     </v-row>
