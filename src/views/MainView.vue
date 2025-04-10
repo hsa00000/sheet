@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect, watch } from 'vue'
+import { ref, computed, watchEffect, watch, onMounted } from 'vue'
 import type { Header } from '@/type/type'
 import EditView from './EditView.vue'
 import PrintView from './PrintView.vue'
@@ -70,6 +70,7 @@ import Papa from 'papaparse'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
+import { loadFile, saveFile } from '@/db/db'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
@@ -94,13 +95,15 @@ const addOutsider = () => {
   }
 }
 
-watch(uploadedFile, (file) => {
+watch(uploadedFile, async (file) => {
   if (!file) return
   const reader = new FileReader()
-  reader.onload = () => {
+  reader.onload = async () => {
     const uint8Array = new Uint8Array(reader.result as ArrayBuffer)
-    const decoder = new TextDecoder('big5') // Big5 轉 UTF-8
+    const decoder = new TextDecoder('big5')
     const text = decoder.decode(uint8Array)
+
+    await saveFile('lastCsvFile', text) // 儲存使用者上傳的內容
 
     const result = Papa.parse(text, {
       header: true,
@@ -118,8 +121,6 @@ watch(uploadedFile, (file) => {
         food: String(cleanedRow['提供用餐'] ?? ''),
       }
     })
-
-    console.log('解析後的 items:', participantStore.participantList)
   }
   reader.readAsArrayBuffer(file)
 })
@@ -141,6 +142,34 @@ const headers = computed(() => {
 
 watchEffect(() => {
   console.log('modeStore.food is', modeStore.enableFood)
+})
+
+onMounted(async () => {
+  const saved = await loadFile('lastCsvFile')
+  if (saved) {
+    console.log('[Loaded CSV from IndexedDB]', saved)
+
+    const result = Papa.parse(saved, {
+      header: true,
+      skipEmptyLines: true,
+    })
+
+    participantStore.participantList = result.data.map((row) => {
+      const cleanedRow = Object.fromEntries(
+        Object.entries(row as Record<string, unknown>).map(([key, value]) => [key.trim(), value]),
+      )
+      return {
+        id: String(cleanedRow['職工/學號'] ?? ''),
+        department: String(cleanedRow['單位'] ?? ''),
+        name: String(cleanedRow['參加者'] ?? ''),
+        food: String(cleanedRow['提供用餐'] ?? ''),
+      }
+    })
+
+    console.log('[Participants loaded from saved CSV]', participantStore.participantList)
+  } else {
+    console.log('[No saved CSV file found]')
+  }
 })
 </script>
 
