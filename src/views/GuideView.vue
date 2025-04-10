@@ -2,7 +2,7 @@
   <v-container class="py-10">
     <v-row justify="center" class="mb-6">
       <v-col cols="12" class="text-center">
-        <h2 class="font-weight-bold">如何操作：</h2>
+        <h1 class="font-weight-bold mb-4">如何操作</h1>
       </v-col>
     </v-row>
 
