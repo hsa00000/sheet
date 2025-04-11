@@ -8,17 +8,21 @@ export function parseCsvToParticipantList(csvText: string): Participant[] {
     skipEmptyLines: true,
   })
 
-  const mappedList: Participant[] = (result.data as Record<string, unknown>[]).map((row) => {
-    const cleanedRow = Object.fromEntries(
-      Object.entries(row).map(([key, value]) => [key.trim(), value]),
-    )
-    return {
-      id: String(cleanedRow['職工/學號'] ?? ''),
-      department: String(cleanedRow['單位'] ?? ''),
-      name: String(cleanedRow['參加者'] ?? ''),
-      food: String(cleanedRow['提供用餐'] ?? ''),
-    }
-  })
+  const mappedList: Participant[] = (result.data as Record<string, unknown>[])
+    .map((row) => {
+      const cleanedRow = Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [key.trim(), value]),
+      )
+      return {
+        id: String(cleanedRow['職工/學號'] ?? ''),
+        department: String(cleanedRow['單位'] ?? ''),
+        name: String(cleanedRow['參加者'] ?? ''),
+        food: String(cleanedRow['提供用餐'] ?? ''),
+      }
+    })
+    .filter((item) => {
+      return item.id !== '' || item.department !== '' || item.name !== '' || item.food !== ''
+    })
 
   mappedList.sort((a, b) => {
     const indexA = DEPARTMENT_ORDER.indexOf(a.department)

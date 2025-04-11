@@ -223,8 +223,15 @@ watch(uploadedFile, async (file) => {
       const text = decoder.decode(uint8Array)
 
       const parsed = parseCsvToParticipantList(text)
+
+      if (parsed.length === 0) {
+        messageStore.error('CSV 檔案內容為空或格式錯誤')
+        return
+      }
+
       await saveParticipants(parsed)
       participantStore.participantList = parsed
+      messageStore.success('匯入成功')
     } catch (err: unknown) {
       console.error('CSV 解析失敗', err)
       messageStore.error('CSV 解析失敗')
