@@ -99,6 +99,7 @@ const paginatedItems = computed(() => {
 .multi-line-truncate {
   display: -webkit-box;
   -webkit-line-clamp: 2; /* 最多顯示兩行 */
+  line-clamp: 2; /* Standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
