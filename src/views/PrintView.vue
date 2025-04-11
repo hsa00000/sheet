@@ -12,13 +12,15 @@
             class="print-page"
             variant="text"
           >
-            <v-card-text class="text-body-1 text-center">
-              <p class="text-h3 font-weight-bold">{{ `${activityStore.name}簽到表` }}</p>
-            </v-card-text>
+            <v-card-text class="text-center">
+              <h1 class="font-weight-bold mb-4">
+                {{ `${activityStore.name}簽到表` }}
+              </h1></v-card-text
+            >
             <v-card-text class="text-body-1">
-              <p class="text-h5"><span>活動名稱：</span>{{ activityStore.name }}</p>
-              <p class="text-h5"><span>活動期間：</span>{{ activityStore.period }}</p>
-              <p class="text-h5"><span>活動地點：</span>{{ activityStore.location }}</p>
+              <p class="text-h6"><span>活動名稱：</span>{{ activityStore.name }}</p>
+              <p class="text-h6"><span>活動期間：</span>{{ activityStore.period }}</p>
+              <p class="text-h6"><span>活動地點：</span>{{ activityStore.location }}</p>
             </v-card-text>
 
             <v-data-table
@@ -87,7 +89,7 @@ const paginatedItems = computed(() => {
 /* Table font size */
 .v-data-table,
 .v-card-text {
-  font-size: 12pt;
+  font-size: 14pt;
 }
 
 @media print {
