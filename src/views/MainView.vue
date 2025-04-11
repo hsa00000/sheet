@@ -7,7 +7,11 @@
         <v-btn to="/guide"> 使用教學 </v-btn>
         <v-btn to="/about"> 關於本站 </v-btn>
       </v-toolbar>
-      <RouterView />
+      <router-view v-slot="{ Component }">
+        <KeepAlive include="EditView,PrintView">
+          <component :is="Component" />
+        </KeepAlive>
+      </router-view>
     </v-row>
   </v-container>
 </template>
