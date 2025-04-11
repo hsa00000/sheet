@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="d-flex justify-center">
-      <v-col cols="6" class="print-full-width">
+      <v-col cols="12" lg="6" class="print-full-width">
         <v-card variant="text">
           <v-card-title class="no-print d-flex justify-center"
             >直接使用 Chrome 列印即可</v-card-title
