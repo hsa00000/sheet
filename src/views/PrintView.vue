@@ -12,15 +12,19 @@
             class="print-page"
             variant="text"
           >
-            <v-card-text class="text-center">
-              <h1 class="font-weight-bold mb-4">
-                {{ `${activityStore.name}簽到表` }}
-              </h1></v-card-text
-            >
+            <h1 class="font-weight-bold text-center">
+              {{ `簽到表` }}
+            </h1>
             <v-card-text class="text-body-1">
-              <p class="text-h6"><span>活動名稱：</span>{{ activityStore.name }}</p>
-              <p class="text-h6"><span>活動期間：</span>{{ activityStore.period }}</p>
-              <p class="text-h6"><span>活動地點：</span>{{ activityStore.location }}</p>
+              <p class="text-h5 multi-line-truncate">
+                <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
+              </p>
+              <p class="text-h5 multi-line-truncate">
+                <span class="label-strong">活動期間：</span>{{ activityStore.period }}
+              </p>
+              <p class="text-h5 multi-line-truncate">
+                <span class="label-strong">活動地點：</span>{{ activityStore.location }}
+              </p>
             </v-card-text>
 
             <v-data-table
@@ -90,6 +94,18 @@ const paginatedItems = computed(() => {
 .v-data-table,
 .v-card-text {
   font-size: 14pt;
+}
+
+.multi-line-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 最多顯示兩行 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.label-strong {
+  font-weight: bold;
+  color: #000; /* 或用其他更深的顏色如 #111, #222 視需求調整 */
 }
 
 @media print {
