@@ -30,11 +30,11 @@ export const openDb = (): Promise<IDBDatabase> => {
 
 export const saveParticipants = async (data: Participant[]): Promise<void> => {
   const db = await openDb()
+  const cloneSafeData = JSON.parse(JSON.stringify(data)) // 深度清洗
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, 'readwrite')
     const store = tx.objectStore(STORE_NAME)
-    store.put(data, FIXED_KEY)
-
+    store.put(cloneSafeData, FIXED_KEY)
     tx.oncomplete = () => resolve()
     tx.onerror = () => reject(tx.error)
     tx.onabort = () => reject(tx.error)

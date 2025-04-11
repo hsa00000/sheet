@@ -149,6 +149,7 @@ const deleteParticipant = (participant: Participant) => {
   const index = participantStore.combinedList.findIndex((p) => p === participant)
   if (index !== -1) {
     participantStore.deleteByCombinedIndex(index)
+    saveParticipants(participantStore.participantList)
   }
 }
 
@@ -157,8 +158,8 @@ const moveUp = (participant: Participant) => {
   const participantListIndex = index - participantStore.outsider.length
   if (participantListIndex >= 0) {
     participantStore.moveUpInParticipantList(participantListIndex)
+    saveParticipants(participantStore.participantList)
   }
-  console.log('participantStore.combinedList is', participantStore.combinedList)
 }
 
 const moveDown = (participant: Participant) => {
@@ -166,6 +167,7 @@ const moveDown = (participant: Participant) => {
   const participantListIndex = index - participantStore.outsider.length
   if (participantListIndex >= 0) {
     participantStore.moveDownInParticipantList(participantListIndex)
+    saveParticipants(participantStore.participantList)
   }
 }
 
@@ -182,6 +184,7 @@ const addOutsider = () => {
       food: '無須用餐',
     })
     newOutsider.value = ''
+    saveParticipants(participantStore.participantList)
   }
 }
 
