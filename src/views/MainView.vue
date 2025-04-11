@@ -16,8 +16,7 @@
 import { watchEffect, onMounted } from 'vue'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
-import { loadFile } from '@/db/db'
-import { parseCsvToParticipantList } from '@/script/parse'
+import { loadParticipants } from '@/db/db'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
@@ -27,9 +26,9 @@ watchEffect(() => {
 })
 
 onMounted(async () => {
-  const saved = await loadFile('lastCsvFile')
+  const saved = await loadParticipants()
   if (saved) {
-    participantStore.participantList = parseCsvToParticipantList(saved)
+    participantStore.participantList = saved
   }
 })
 </script>

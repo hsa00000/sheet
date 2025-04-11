@@ -124,7 +124,7 @@ import { ref, computed, watch } from 'vue'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useModeStore } from '@/stores/modeStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
-import { saveFile } from '@/db/db'
+import { saveParticipants } from '@/db/db'
 import { headers } from '@/script/computeHeader'
 import { parseCsvToParticipantList } from '@/script/parse'
 
@@ -195,9 +195,9 @@ watch(uploadedFile, async (file) => {
     const decoder = new TextDecoder('big5')
     const text = decoder.decode(uint8Array)
 
-    await saveFile('lastCsvFile', text) // 儲存使用者上傳的內容
-
-    participantStore.participantList = parseCsvToParticipantList(text)
+    const parsed = parseCsvToParticipantList(text)
+    await saveParticipants(parsed)
+    participantStore.participantList = parsed
   }
   reader.readAsArrayBuffer(file)
 })
