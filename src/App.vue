@@ -1,10 +1,14 @@
-<script setup lang="ts">
-import MainView from './views/MainView.vue'
-</script>
-
 <template>
   <MainView />
+  <v-snackbar-queue v-model="messageStore.queue" timeout="2500" />
 </template>
+<script setup lang="ts">
+import { useMessageStore } from './stores/messageStore'
+import MainView from './views/MainView.vue'
+
+const messageStore = useMessageStore()
+</script>
+
 <style scoped>
 body,
 html {

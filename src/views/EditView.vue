@@ -129,12 +129,14 @@ import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 import { saveParticipants } from '@/db/db'
 import { headers } from '@/script/computeHeader'
 import { parseCsvToParticipantList } from '@/script/parse'
+import { useMessageStore } from '@/stores/messageStore'
 
 const emptyPageNumberStore = useEmptyPageNumberStore()
 const page = ref(1)
 const activityStore = useActivityStore()
 const participantStore = useParticipantStore()
 const modeStore = useModeStore()
+const messageStore = useMessageStore()
 
 const newOutsider = ref('')
 
@@ -194,16 +196,41 @@ const uploadedFile = ref<File | null>(null)
 
 watch(uploadedFile, async (file) => {
   if (!file) return
+
+  const fileName = file.name.toLowerCase()
+  const validExtension = fileName.endsWith('.csv')
+  const validMimeType =
+    file.type === 'text/csv' || file.type === 'application/vnd.ms-excel' || file.type === ''
+
+  if (!validExtension || !validMimeType) {
+    messageStore.error('只能上傳 CSV 檔案')
+    uploadedFile.value = null
+    return
+  }
+
+  const maxSize = 1 * 1024 * 1024 // 1MB
+  if (file.size > maxSize) {
+    messageStore.error('檔案大小不能超過 1MB')
+    uploadedFile.value = null
+    return
+  }
+
   const reader = new FileReader()
   reader.onload = async () => {
-    const uint8Array = new Uint8Array(reader.result as ArrayBuffer)
-    const decoder = new TextDecoder('big5')
-    const text = decoder.decode(uint8Array)
+    try {
+      const uint8Array = new Uint8Array(reader.result as ArrayBuffer)
+      const decoder = new TextDecoder('big5')
+      const text = decoder.decode(uint8Array)
 
-    const parsed = parseCsvToParticipantList(text)
-    await saveParticipants(parsed)
-    participantStore.participantList = parsed
+      const parsed = parseCsvToParticipantList(text)
+      await saveParticipants(parsed)
+      participantStore.participantList = parsed
+    } catch (err: unknown) {
+      console.error('CSV 解析失敗', err)
+      messageStore.error('CSV 解析失敗')
+    }
   }
+
   reader.readAsArrayBuffer(file)
 })
 </script>

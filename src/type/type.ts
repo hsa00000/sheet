@@ -15,3 +15,10 @@ export interface ActivityInfo {
   period: string
   location: string
 }
+
+export type MessageColor = 'error' | 'success'
+
+export interface Message {
+  text: string
+  color: MessageColor
+}
