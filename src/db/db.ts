@@ -5,10 +5,17 @@ const DB_NAME = 'MyAppDB'
 const STORE_NAME = 'participants'
 const FIXED_KEY = 'latest'
 const MODE_KEY = 'mode'
+const ACTIVITY_KEY = 'activity'
 
 interface ModeState {
   enableFood: boolean
   displayExtendedAsRegular: boolean
+}
+
+interface ActivityState {
+  name: string
+  period: string
+  location: string
 }
 
 export const openDb = (): Promise<IDBDatabase> => {
@@ -79,6 +86,32 @@ export const loadModeState = async (): Promise<ModeState | null> => {
   const db = await openDb()
   const tx = db.transaction(STORE_NAME, 'readonly')
   const request = tx.objectStore(STORE_NAME).get(MODE_KEY)
+
+  return new Promise((resolve) => {
+    request.onsuccess = () => resolve(request.result ?? null)
+    request.onerror = () => resolve(null)
+  })
+}
+
+// 儲存 activity 狀態
+export const saveActivityState = async (activity: ActivityState): Promise<void> => {
+  const db = await openDb()
+  const cloneSafeData = JSON.parse(JSON.stringify(activity))
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite')
+    const store = tx.objectStore(STORE_NAME)
+    store.put(cloneSafeData, ACTIVITY_KEY)
+    tx.oncomplete = () => resolve()
+    tx.onerror = () => reject(tx.error)
+    tx.onabort = () => reject(tx.error)
+  })
+}
+
+// 載入 activity 狀態
+export const loadActivityState = async (): Promise<ActivityState | null> => {
+  const db = await openDb()
+  const tx = db.transaction(STORE_NAME, 'readonly')
+  const request = tx.objectStore(STORE_NAME).get(ACTIVITY_KEY)
 
   return new Promise((resolve) => {
     request.onsuccess = () => resolve(request.result ?? null)

@@ -28,19 +28,24 @@
         <v-card>
           <v-card-text>
             <v-text-field
-              v-model="activityStore.name"
+              :model-value="activityStore.name"
+              @update:model-value="activityStore.setName"
               label="活動名稱"
               variant="underlined"
               dense
             ></v-text-field>
+
             <v-text-field
-              v-model="activityStore.period"
+              :model-value="activityStore.period"
+              @update:model-value="activityStore.setPeriod"
               label="活動日期"
               variant="underlined"
               dense
             ></v-text-field>
+
             <v-text-field
-              v-model="activityStore.location"
+              :model-value="activityStore.location"
+              @update:model-value="activityStore.setLocation"
               label="活動地點"
               variant="underlined"
               dense

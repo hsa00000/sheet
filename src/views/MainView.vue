@@ -20,10 +20,12 @@
 import { onMounted } from 'vue'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
-import { loadModeState, loadParticipants } from '@/db/db'
+import { loadActivityState, loadModeState, loadParticipants } from '@/db/db'
+import { useActivityStore } from '@/stores/activityStore'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
+const activityStore = useActivityStore()
 
 onMounted(async () => {
   const savedParticipants = await loadParticipants()
@@ -33,7 +35,12 @@ onMounted(async () => {
 
   const savedMode = await loadModeState()
   if (savedMode) {
-    modeStore.loadFromDb(savedMode) // 不會儲存
+    modeStore.loadFromDb(savedMode)
+  }
+
+  const savedActivity = await loadActivityState()
+  if (savedActivity) {
+    activityStore.loadFromDb(savedActivity)
   }
 })
 </script>
