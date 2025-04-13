@@ -20,7 +20,7 @@
 import { watchEffect, onMounted } from 'vue'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
-import { loadParticipants } from '@/db/db'
+import { loadModeState, loadParticipants } from '@/db/db'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
@@ -30,9 +30,14 @@ watchEffect(() => {
 })
 
 onMounted(async () => {
-  const saved = await loadParticipants()
-  if (saved) {
-    participantStore.participantList = saved
+  const savedParticipants = await loadParticipants()
+  if (savedParticipants) {
+    participantStore.participantList = savedParticipants
+  }
+
+  const savedMode = await loadModeState()
+  if (savedMode) {
+    modeStore.loadFromDb(savedMode) // 不會儲存
   }
 })
 </script>

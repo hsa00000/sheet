@@ -2,17 +2,22 @@
   <v-container class="fill-height d-flex align-center justify-center text-center">
     <v-row>
       <v-col cols="12" xl="3">
-        <!-- 用餐勾選 -->
+        <!-- 勾選 -->
         <v-list-item>
           <v-list-item-action start>
-            <v-checkbox-btn v-model="modeStore.enableFood" label="顯示用餐資訊" />
+            <v-checkbox-btn
+              :model-value="modeStore.enableFood"
+              @update:model-value="modeStore.setEnableFood"
+              label="顯示用餐資訊"
+            />
           </v-list-item-action>
         </v-list-item>
 
         <v-list-item>
           <v-list-item-action start>
             <v-checkbox-btn
-              v-model="modeStore.displayExtendedAsRegular"
+              :model-value="modeStore.displayExtendedAsRegular"
+              @update:model-value="modeStore.setDisplayExtendedAsRegular"
               label="顯示「數學延」為「數學四」"
             />
           </v-list-item-action>
@@ -151,7 +156,7 @@ import { ref, computed, watch } from 'vue'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useModeStore } from '@/stores/modeStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
-import { saveParticipants } from '@/db/db'
+import { saveModeState, saveParticipants } from '@/db/db'
 import { headers } from '@/script/computeHeader'
 import { parseCsvToParticipantList } from '@/script/parse'
 import { useMessageStore } from '@/stores/messageStore'
@@ -265,6 +270,17 @@ watch(uploadedFile, async (file) => {
 
   reader.readAsArrayBuffer(file)
 })
+
+watch(
+  () => ({
+    enableFood: modeStore.enableFood,
+    displayExtendedAsRegular: modeStore.displayExtendedAsRegular,
+  }),
+  (newVal) => {
+    saveModeState(newVal)
+  },
+  { deep: true },
+)
 </script>
 
 <style scoped></style>
