@@ -34,7 +34,13 @@
               :items="pageItems"
               class="print-table row-height-26 text-center text-black"
               :items-per-page="itemsPerPage"
-            >
+              ><template #[`item.department`]="{ item }">
+                {{
+                  modeStore.displayExtendedAsRegular && item.department === '數學延'
+                    ? '數學四'
+                    : item.department
+                }}
+              </template>
               <template #[`item.index`]="{ index }">
                 {{ pageIndex * itemsPerPage + index + 1 }}
               </template>
@@ -54,10 +60,12 @@ import { itemsPerPage } from '@/const/const'
 import { computed } from 'vue'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
+import { useModeStore } from '@/stores/modeStore'
 
 const activityStore = useActivityStore()
 const participantStore = useParticipantStore()
 const emptyPageNumberStore = useEmptyPageNumberStore()
+const modeStore = useModeStore()
 
 const paginatedItems = computed(() => {
   const combined = [...participantStore.combinedList]

@@ -4,11 +4,18 @@
       <v-col cols="12" xl="3">
         <!-- 用餐勾選 -->
         <v-list-item>
-          <template #prepend>
-            <v-list-item-action start>
-              <v-checkbox-btn v-model="modeStore.enableFood" label="用餐" />
-            </v-list-item-action>
-          </template>
+          <v-list-item-action start>
+            <v-checkbox-btn v-model="modeStore.enableFood" label="顯示用餐資訊" />
+          </v-list-item-action>
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-action start>
+            <v-checkbox-btn
+              v-model="modeStore.displayExtendedAsRegular"
+              label="顯示「數學延」為「數學四」"
+            />
+          </v-list-item-action>
         </v-list-item>
       </v-col>
       <v-col cols="12" xl="6">
