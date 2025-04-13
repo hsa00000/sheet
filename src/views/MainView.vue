@@ -17,17 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import { watchEffect, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
 import { loadModeState, loadParticipants } from '@/db/db'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
-
-watchEffect(() => {
-  console.log('modeStore.food is', modeStore.enableFood)
-})
 
 onMounted(async () => {
   const savedParticipants = await loadParticipants()
