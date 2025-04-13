@@ -98,7 +98,7 @@ const paginatedItems = computed(() => {
 <style scoped>
 :deep(.v-data-table.row-height-26 tr),
 :deep(.v-data-table.row-height-26 td) {
-  height: 60px !important;
+  height: 70px !important;
 }
 /* Table font size */
 .v-data-table,
@@ -134,6 +134,10 @@ const paginatedItems = computed(() => {
   .print-full-width {
     flex: 0 0 100% !important;
     max-width: 100% !important;
+  }
+  :deep(.v-data-table.row-height-26 tr),
+  :deep(.v-data-table.row-height-26 td) {
+    height: 60px !important;
   }
 }
 
