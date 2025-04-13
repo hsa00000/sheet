@@ -39,11 +39,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-:deep(.v-data-table.row-height-26 tr),
-:deep(.v-data-table.row-height-26 td) {
-  height: 70px !important;
-}
-
 :deep(.v-table .v-table__wrapper > table) {
   border: 2px solid #000 !important;
   border-collapse: collapse !important;

@@ -12,17 +12,17 @@
             class="print-page"
             variant="text"
           >
-            <h1 class="font-weight-bold text-center">
-              {{ `簽到表` }}
+            <h1 class="font-weight-bold text-center fixed-three-line">
+              {{ `${activityStore.name} 簽到表` }}
             </h1>
             <v-card-text class="text-body-1">
-              <p class="text-h5 multi-line-truncate">
+              <p class="text-h5 fixed-two-line">
                 <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
               </p>
-              <p class="text-h5 multi-line-truncate">
+              <p class="text-h5 fixed-two-line">
                 <span class="label-strong">活動期間：</span>{{ activityStore.period }}
               </p>
-              <p class="text-h5 multi-line-truncate">
+              <p class="text-h5 fixed-two-line">
                 <span class="label-strong">活動地點：</span>{{ activityStore.location }}
               </p>
             </v-card-text>
@@ -96,8 +96,10 @@ const paginatedItems = computed(() => {
 </script>
 
 <style scoped>
-/* Print page layout */
-
+:deep(.v-data-table.row-height-26 tr),
+:deep(.v-data-table.row-height-26 td) {
+  height: 60px !important;
+}
 /* Table font size */
 .v-data-table,
 .v-card-text {
@@ -133,5 +135,31 @@ const paginatedItems = computed(() => {
     flex: 0 0 100% !important;
     max-width: 100% !important;
   }
+}
+
+.fixed-two-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* 固定兩行高度 */
+  line-height: 1.5em; /* 可視實際字體微調 */
+  min-height: 3em; /* 1.5em * 2 = 兩行高度 */
+}
+
+.fixed-three-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* 固定兩行高度 */
+  line-height: 1.5em; /* 可視實際字體微調 */
+  min-height: 4.5em; /* 1.5em * 2 = 兩行高度 */
 }
 </style>
