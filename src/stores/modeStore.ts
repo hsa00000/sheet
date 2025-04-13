@@ -9,21 +9,21 @@ export const useModeStore = defineStore('mode', {
   actions: {
     setEnableFood(value: boolean) {
       this.enableFood = value
-      saveModeState({
-        enableFood: this.enableFood,
-        displayExtendedAsRegular: this.displayExtendedAsRegular,
-      })
+      this._save()
     },
     setDisplayExtendedAsRegular(value: boolean) {
       this.displayExtendedAsRegular = value
-      saveModeState({
-        enableFood: this.enableFood,
-        displayExtendedAsRegular: this.displayExtendedAsRegular,
-      })
+      this._save()
     },
     loadFromDb(payload: { enableFood: boolean; displayExtendedAsRegular: boolean }) {
       this.enableFood = payload.enableFood
       this.displayExtendedAsRegular = payload.displayExtendedAsRegular
+    },
+    _save() {
+      saveModeState({
+        enableFood: this.enableFood,
+        displayExtendedAsRegular: this.displayExtendedAsRegular,
+      })
     },
   },
 })

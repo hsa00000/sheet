@@ -1,4 +1,3 @@
-// src/stores/activityStore.ts
 import { defineStore } from 'pinia'
 import { saveActivityState } from '@/db/db'
 
