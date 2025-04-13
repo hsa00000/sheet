@@ -18,6 +18,7 @@
           </v-list-item-action>
         </v-list-item>
       </v-col>
+
       <v-col cols="12" xl="6">
         <v-card>
           <v-card-text>
@@ -57,22 +58,38 @@
 
             <!-- Editable id column -->
             <template #[`item.id`]="{ item }">
-              <v-text-field v-model="item.id" hide-details></v-text-field>
+              <v-text-field
+                v-model="item.id"
+                hide-details
+                @update:model-value="saveParticipants(participantStore.participantList)"
+              ></v-text-field>
             </template>
 
             <!-- Editable department column -->
             <template #[`item.department`]="{ item }">
-              <v-text-field v-model="item.department" hide-details></v-text-field>
+              <v-text-field
+                v-model="item.department"
+                hide-details
+                @update:model-value="saveParticipants(participantStore.participantList)"
+              ></v-text-field>
             </template>
 
             <!-- Editable name column -->
             <template #[`item.name`]="{ item }">
-              <v-text-field v-model="item.name" hide-details></v-text-field>
+              <v-text-field
+                v-model="item.name"
+                hide-details
+                @update:model-value="saveParticipants(participantStore.participantList)"
+              ></v-text-field>
             </template>
 
             <!-- Editable food column -->
             <template #[`item.food`]="{ item }">
-              <v-text-field v-model="item.food" hide-details></v-text-field>
+              <v-text-field
+                v-model="item.food"
+                hide-details
+                @update:model-value="saveParticipants(participantStore.participantList)"
+              ></v-text-field>
             </template>
 
             <!-- button column -->
@@ -98,6 +115,7 @@
           </v-data-table>
         </v-card>
       </v-col>
+
       <v-col cols="12" xl="3">
         <v-file-input
           prepend-icon=""
