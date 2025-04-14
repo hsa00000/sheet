@@ -54,12 +54,13 @@
 
           <v-data-table
             :headers="tableHeaders"
-            :items="participantStore.combinedList"
+            :items="participantStore.participantList"
             v-model:page="page"
             class="print-table row-height-26 text-center text-black"
             :items-per-page="itemsPerPage"
             no-data-text="請先選擇 csv 檔"
             items-per-page-text="每頁顯示數量"
+            :item-value="(item) => `${item.id}-${item.name}`"
           >
             <!-- Index column -->
             <template #[`item.index`]="{ index }">
@@ -106,20 +107,8 @@
             <template #[`item.actions`]="{ item }">
               <div class="d-flex flex-row justify-center ga-1">
                 <v-btn variant="outlined" @click="deleteParticipant(item)">刪除</v-btn>
-                <v-btn
-                  variant="outlined"
-                  @click="moveUp(item)"
-                  :disabled="participantStore.isOutsider(item)"
-                >
-                  上移
-                </v-btn>
-                <v-btn
-                  variant="outlined"
-                  @click="moveDown(item)"
-                  :disabled="participantStore.isOutsider(item)"
-                >
-                  下移
-                </v-btn>
+                <v-btn variant="outlined" @click="moveUp(item)"> 上移 </v-btn>
+                <v-btn variant="outlined" @click="moveDown(item)"> 下移 </v-btn>
               </div>
             </template>
           </v-data-table>
@@ -185,27 +174,25 @@ const tableHeaders = computed(() => [
 // Function to delete a participant
 
 const deleteParticipant = (participant: Participant) => {
-  const index = participantStore.combinedList.findIndex((p) => p === participant)
+  const index = participantStore.participantList.findIndex((p) => p === participant)
   if (index !== -1) {
-    participantStore.deleteByCombinedIndex(index)
+    participantStore.participantList.splice(index, 1)
     saveParticipants(participantStore.participantList)
   }
 }
 
 const moveUp = (participant: Participant) => {
-  const index = participantStore.combinedList.findIndex((p) => p === participant)
-  const participantListIndex = index - participantStore.outsider.length
-  if (participantListIndex >= 0) {
-    participantStore.moveUpInParticipantList(participantListIndex)
+  const index = participantStore.participantList.findIndex((p) => p === participant)
+  if (index > 0) {
+    participantStore.moveUpInParticipantList(index)
     saveParticipants(participantStore.participantList)
   }
 }
 
 const moveDown = (participant: Participant) => {
-  const index = participantStore.combinedList.findIndex((p) => p === participant)
-  const participantListIndex = index - participantStore.outsider.length
-  if (participantListIndex >= 0) {
-    participantStore.moveDownInParticipantList(participantListIndex)
+  const index = participantStore.participantList.findIndex((p) => p === participant)
+  if (index >= 0 && index < participantStore.participantList.length - 1) {
+    participantStore.moveDownInParticipantList(index)
     saveParticipants(participantStore.participantList)
   }
 }
@@ -214,9 +201,9 @@ const addOutsider = () => {
   const name = newOutsider.value.trim()
   if (!name) return
 
-  const exists = participantStore.outsider.some((p) => p.name === name)
+  const exists = participantStore.participantList.some((p) => p.name === name)
   if (!exists) {
-    participantStore.outsider.push({
+    participantStore.participantList.unshift({
       id: '',
       department: '校外人士',
       name,
