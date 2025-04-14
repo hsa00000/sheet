@@ -107,8 +107,23 @@
             <template #[`item.actions`]="{ item }">
               <div class="d-flex flex-row justify-center ga-1">
                 <v-btn variant="outlined" @click="deleteParticipant(item)">刪除</v-btn>
-                <v-btn variant="outlined" @click="moveUp(item)"> 上移 </v-btn>
-                <v-btn variant="outlined" @click="moveDown(item)"> 下移 </v-btn>
+                <v-btn
+                  variant="outlined"
+                  @click="moveUp(item)"
+                  :disabled="participantStore.participantList.findIndex((p) => p === item) === 0"
+                >
+                  上移
+                </v-btn>
+                <v-btn
+                  variant="outlined"
+                  @click="moveDown(item)"
+                  :disabled="
+                    participantStore.participantList.findIndex((p) => p === item) ===
+                    participantStore.participantList.length - 1
+                  "
+                >
+                  下移
+                </v-btn>
               </div>
             </template>
           </v-data-table>
