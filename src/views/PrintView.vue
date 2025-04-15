@@ -68,7 +68,7 @@ const emptyPageNumberStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
 const paginatedItems = computed(() => {
-  const combined = [...participantStore.combinedList]
+  const combined = [...participantStore.participantList]
 
   const blankCount =
     Math.ceil(combined.length / 10) * 10 -
