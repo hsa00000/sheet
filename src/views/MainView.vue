@@ -21,7 +21,7 @@
         <v-btn
           variant="tonal"
           rounded="xl"
-          prepend-icon="mdi-export-variant"
+          prepend-icon="mdi-content-copy"
           class="ms-2"
           @click="logShareUrl"
         >
