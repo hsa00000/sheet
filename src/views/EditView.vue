@@ -60,7 +60,6 @@
             :items-per-page="itemsPerPage"
             no-data-text="請先選擇 csv 檔"
             items-per-page-text="每頁顯示數量"
-            :item-value="(item) => `${item.id}-${item.name}`"
           >
             <!-- Index column -->
             <template #[`item.index`]="{ index }">
@@ -151,6 +150,7 @@
           :step="1"
           control-variant="default"
           hide-details
+          class="mb-5"
         />
       </v-col>
     </v-row>
