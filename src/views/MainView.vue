@@ -1,22 +1,34 @@
 <template>
   <v-container class="d-flex justify-center align-center">
-    <v-row>
-      <v-toolbar class="no-print px-2">
-        <v-btn to="/edit"> 編輯模式 </v-btn>
-        <v-btn to="/print"> 列印模式 </v-btn>
-        <v-btn to="/guide"> 使用教學 </v-btn>
-        <v-btn to="/about"> 關於本站 </v-btn>
-        <v-spacer></v-spacer>
+    <v-row class="w-100">
+      <v-toolbar class="no-print px-2 w-100">
+        <v-slide-group show-arrows class="flex-grow-1">
+          <v-slide-group-item>
+            <v-btn to="/edit" class="ma-1">編輯模式</v-btn>
+          </v-slide-group-item>
+          <v-slide-group-item>
+            <v-btn to="/print" class="ma-1">列印模式</v-btn>
+          </v-slide-group-item>
+          <v-slide-group-item>
+            <v-btn to="/guide" class="ma-1">使用教學</v-btn>
+          </v-slide-group-item>
+          <v-slide-group-item>
+            <v-btn to="/about" class="ma-1">關於本站</v-btn>
+          </v-slide-group-item>
+          <!-- 更多按鈕 -->
+        </v-slide-group>
+
         <v-btn
           variant="tonal"
           rounded="xl"
           prepend-icon="mdi-export-variant"
-          size="large"
+          class="ms-2"
           @click="logShareUrl"
         >
           分享
         </v-btn>
       </v-toolbar>
+
       <router-view v-slot="{ Component }">
         <KeepAlive include="EditView,PrintView">
           <component :is="Component" />
