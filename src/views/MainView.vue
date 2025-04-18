@@ -45,6 +45,7 @@ import { useParticipantStore } from '@/stores/participantStore'
 import { loadActivityState, loadModeState, loadParticipants } from '@/db/db'
 import { useActivityStore } from '@/stores/activityStore'
 import { useMessageStore } from '@/stores/messageStore'
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
@@ -52,7 +53,20 @@ const activityStore = useActivityStore()
 const messageStore = useMessageStore()
 
 function logShareUrl() {
-  const encoded = participantStore.encodeToShareUrl()
+  const payload = {
+    participantList: participantStore.participantList,
+    modeState: {
+      enableFood: modeStore.enableFood,
+      displayExtendedAsRegular: modeStore.displayExtendedAsRegular,
+    },
+    activityState: {
+      name: activityStore.name,
+      period: activityStore.period,
+      location: activityStore.location,
+    },
+  }
+
+  const encoded = compressToEncodedURIComponent(JSON.stringify(payload))
   const shareUrl = `${location.origin}${location.pathname}#/edit?data=${encoded}`
 
   navigator.clipboard
@@ -68,29 +82,45 @@ function logShareUrl() {
 }
 
 onMounted(async () => {
-  const url = new URL(location.href)
-  const encoded = url.hash.match(/data=([^&]+)/)?.[1]
+  const encoded = location.hash.match(/data=([^&]+)/)?.[1]
 
   if (encoded) {
-    // 如果網址上有 data 參數，就還原
-    participantStore.decodeFromUrlData(encoded)
+    try {
+      const json = decompressFromEncodedURIComponent(encoded)
+      if (!json) throw new Error('空資料')
+
+      const parsed = JSON.parse(json)
+
+      if (parsed.participantList) {
+        participantStore.participantList = parsed.participantList
+      }
+
+      if (parsed.modeState) {
+        modeStore.loadFromDb(parsed.modeState)
+      }
+
+      if (parsed.activityState) {
+        activityStore.loadFromDb(parsed.activityState)
+      }
+    } catch (error) {
+      console.error('解碼失敗', error)
+      messageStore.error('分享連結格式錯誤，無法還原資料')
+    }
   } else {
-    // 否則才從 IndexedDB 載入
     const savedParticipants = await loadParticipants()
     if (savedParticipants) {
       participantStore.participantList = savedParticipants
     }
-  }
 
-  // mode 與 activity 不受網址影響，仍然從 IndexedDB 載入
-  const savedMode = await loadModeState()
-  if (savedMode) {
-    modeStore.loadFromDb(savedMode)
-  }
+    const savedModeState = await loadModeState()
+    if (savedModeState) {
+      modeStore.loadFromDb(savedModeState)
+    }
 
-  const savedActivity = await loadActivityState()
-  if (savedActivity) {
-    activityStore.loadFromDb(savedActivity)
+    const savedActivityState = await loadActivityState()
+    if (savedActivityState) {
+      activityStore.loadFromDb(savedActivityState)
+    }
   }
 })
 </script>
