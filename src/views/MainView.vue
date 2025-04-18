@@ -42,15 +42,22 @@
 import { onMounted } from 'vue'
 import { useModeStore } from '@/stores/modeStore'
 import { useParticipantStore } from '@/stores/participantStore'
-import { loadActivityState, loadModeState, loadParticipants } from '@/db/db'
+import {
+  loadActivityState,
+  loadEmptyPageNumberState,
+  loadModeState,
+  loadParticipants,
+} from '@/db/db'
 import { useActivityStore } from '@/stores/activityStore'
 import { useMessageStore } from '@/stores/messageStore'
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
+import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 
 const modeStore = useModeStore()
 const participantStore = useParticipantStore()
 const activityStore = useActivityStore()
 const messageStore = useMessageStore()
+const emptyPageNumberStore = useEmptyPageNumberStore()
 
 function logShareUrl() {
   const payload = {
@@ -64,6 +71,7 @@ function logShareUrl() {
       period: activityStore.period,
       location: activityStore.location,
     },
+    emptyPageNumber: emptyPageNumberStore.emptyPageNumber,
   }
 
   const encoded = compressToEncodedURIComponent(JSON.stringify(payload))
@@ -102,6 +110,10 @@ onMounted(async () => {
       if (parsed.activityState) {
         activityStore.loadFromDb(parsed.activityState)
       }
+
+      if (parsed.emptyPageNumber !== undefined) {
+        emptyPageNumberStore.loadFromDb({ emptyPageNumber: parsed.emptyPageNumber })
+      }
     } catch (error) {
       console.error('解碼失敗', error)
       messageStore.error('分享連結格式錯誤，無法還原資料')
@@ -120,6 +132,11 @@ onMounted(async () => {
     const savedActivityState = await loadActivityState()
     if (savedActivityState) {
       activityStore.loadFromDb(savedActivityState)
+    }
+
+    const savedEmptyPageNumberState = await loadEmptyPageNumberState()
+    if (savedEmptyPageNumberState) {
+      emptyPageNumberStore.loadFromDb(savedEmptyPageNumberState)
     }
   }
 })

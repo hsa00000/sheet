@@ -6,6 +6,7 @@ const STORE_NAME = 'participants'
 const FIXED_KEY = 'latest'
 const MODE_KEY = 'mode'
 const ACTIVITY_KEY = 'activity'
+const EMPTY_PAGE_NUMBER_KEY = 'emptyPageNumber'
 
 interface ModeState {
   enableFood: boolean
@@ -16,6 +17,10 @@ interface ActivityState {
   name: string
   period: string
   location: string
+}
+
+interface EmptyPageNumberState {
+  emptyPageNumber: number
 }
 
 export const openDb = (): Promise<IDBDatabase> => {
@@ -112,6 +117,32 @@ export const loadActivityState = async (): Promise<ActivityState | null> => {
   const db = await openDb()
   const tx = db.transaction(STORE_NAME, 'readonly')
   const request = tx.objectStore(STORE_NAME).get(ACTIVITY_KEY)
+
+  return new Promise((resolve) => {
+    request.onsuccess = () => resolve(request.result ?? null)
+    request.onerror = () => resolve(null)
+  })
+}
+
+// 儲存 emptyPageNumber 狀態
+export const saveEmptyPageNumberState = async (state: EmptyPageNumberState): Promise<void> => {
+  const db = await openDb()
+  const cloneSafeData = JSON.parse(JSON.stringify(state))
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite')
+    const store = tx.objectStore(STORE_NAME)
+    store.put(cloneSafeData, EMPTY_PAGE_NUMBER_KEY)
+    tx.oncomplete = () => resolve()
+    tx.onerror = () => reject(tx.error)
+    tx.onabort = () => reject(tx.error)
+  })
+}
+
+// 載入 emptyPageNumber 狀態
+export const loadEmptyPageNumberState = async (): Promise<EmptyPageNumberState | null> => {
+  const db = await openDb()
+  const tx = db.transaction(STORE_NAME, 'readonly')
+  const request = tx.objectStore(STORE_NAME).get(EMPTY_PAGE_NUMBER_KEY)
 
   return new Promise((resolve) => {
     request.onsuccess = () => resolve(request.result ?? null)

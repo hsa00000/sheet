@@ -144,7 +144,8 @@
           </template>
         </v-text-field>
         <v-number-input
-          v-model="emptyPageNumberStore.emptyPageNumber"
+          :model-value="emptyPageNumberStore.emptyPageNumber"
+          @update:model-value="emptyPageNumberStore.setEmptyPageNumber"
           label="額外空白簽到頁數"
           :min="0"
           :step="1"
