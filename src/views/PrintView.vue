@@ -132,7 +132,6 @@ const paginatedItems = computed(() => {
 
     /* 讓內容垂直置中 */
     display: flex !important;
-    flex-direction: column;
   }
 
   /* 核心：page-body 加 margin:auto → 在 flex 容器中上下置中 */
@@ -145,14 +144,5 @@ const paginatedItems = computed(() => {
   .print-page {
     page-break-after: always;
   }
-
-  /* 列印行高較密 */
-  :deep(.v-data-table.row-height-26 tr),
-  :deep(.v-data-table.row-height-26 td) {
-    height: 60px !important;
-  }
-
-  /* 若要表格邊框更靠攏可再加下列設定 */
-  /* .print-table  { border-collapse: collapse !important; } */
 }
 </style>
