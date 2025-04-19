@@ -3,70 +3,82 @@
     <v-row class="d-flex justify-center">
       <v-col cols="12" lg="6" class="print-full-width">
         <v-card variant="text">
-          <v-card-title class="no-print d-flex justify-center"
-            >直接使用 Chrome 列印即可</v-card-title
-          >
+          <v-card-title class="no-print d-flex justify-center">
+            直接使用 Chrome 列印即可
+          </v-card-title>
+
+          <!-- 每張要列印的頁面 -->
           <v-card
             v-for="(pageItems, pageIndex) in paginatedItems"
             :key="pageIndex"
             class="print-page"
             variant="text"
           >
-            <h1 class="font-weight-bold text-center fixed-three-line">
-              {{ `${activityStore.name} 簽到表` }}
-            </h1>
-            <v-card-text class="text-body-1">
-              <p class="text-h5 fixed-two-line">
-                <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
-              </p>
-              <p class="text-h5 fixed-two-line">
-                <span class="label-strong">活動期間：</span>{{ activityStore.period }}
-              </p>
-              <p class="text-h5 fixed-two-line">
-                <span class="label-strong">活動地點：</span>{{ activityStore.location }}
-              </p>
-            </v-card-text>
+            <!-- 用 page-body 包住真正要放版面的內容 -->
+            <div class="page-body">
+              <h1 class="font-weight-bold text-center">
+                {{ `${activityStore.name} 簽到表` }}
+              </h1>
 
-            <v-data-table
-              border-collapse:
-              collapse
-              :headers="headers"
-              :items="pageItems"
-              class="print-table row-height-26 text-center text-black"
-              :items-per-page="itemsPerPage"
-              ><template #[`item.department`]="{ item }">
-                {{
-                  modeStore.displayExtendedAsRegular && item.department === '數學延'
-                    ? '數學四'
-                    : item.department
-                }}
-              </template>
-              <template #[`item.index`]="{ index }">
-                {{ pageIndex * itemsPerPage + index + 1 }}
-              </template>
-              <template #bottom> </template>
-            </v-data-table>
+              <v-card-text class="text-body-1">
+                <p class="text-h5">
+                  <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
+                </p>
+                <p class="text-h5">
+                  <span class="label-strong">活動期間：</span>{{ activityStore.period }}
+                </p>
+                <p class="text-h5">
+                  <span class="label-strong">活動地點：</span>{{ activityStore.location }}
+                </p>
+              </v-card-text>
+
+              <v-data-table
+                :headers="headers"
+                :items="pageItems"
+                class="print-table row-height-26 text-center text-black"
+                :items-per-page="itemsPerPage"
+              >
+                <!-- 部門名稱轉換 -->
+                <template #[`item.department`]="{ item }">
+                  {{
+                    modeStore.displayExtendedAsRegular && item.department === '數學延'
+                      ? '數學四'
+                      : item.department
+                  }}
+                </template>
+
+                <!-- 連續流水號 -->
+                <template #[`item.index`]="{ index }">
+                  {{ pageIndex * itemsPerPage + index + 1 }}
+                </template>
+
+                <!-- 移除資料表底部空白 -->
+                <template #bottom />
+              </v-data-table>
+            </div>
           </v-card>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
+
 <script setup lang="ts">
-import { useActivityStore } from '@/stores/activityStore'
-import { headers } from '@/script/computeHeader'
-import type { Participant } from '@/type/type'
-import { itemsPerPage } from '@/const/const'
 import { computed } from 'vue'
+import { useActivityStore } from '@/stores/activityStore'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 import { useModeStore } from '@/stores/modeStore'
+import { headers } from '@/script/computeHeader'
+import { itemsPerPage } from '@/const/const'
+import type { Participant } from '@/type/type'
 
 const activityStore = useActivityStore()
 const participantStore = useParticipantStore()
 const emptyPageNumberStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
+/** 依 itemsPerPage 分頁並補足空白列 */
 const paginatedItems = computed(() => {
   const combined = [...participantStore.participantList]
 
@@ -76,15 +88,8 @@ const paginatedItems = computed(() => {
     emptyPageNumberStore.emptyPageNumber * 10
 
   for (let i = 0; i < blankCount; i++) {
-    combined.push({
-      id: '',
-      department: '',
-      name: '',
-      food: '',
-    } as Participant)
+    combined.push({ id: '', department: '', name: '', food: '' } as Participant)
   }
-
-  console.log('combined result is', combined)
 
   const pages: Participant[][] = []
   for (let i = 0; i < combined.length; i += itemsPerPage) {
@@ -96,74 +101,58 @@ const paginatedItems = computed(() => {
 </script>
 
 <style scoped>
+/* ----------------------- 一般畫面設定 ----------------------- */
 :deep(.v-data-table.row-height-26 tr),
 :deep(.v-data-table.row-height-26 td) {
   height: 70px !important;
 }
-/* Table font size */
+
 .v-data-table,
 .v-card-text {
   font-size: 14pt;
 }
 
-.multi-line-truncate {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* 最多顯示兩行 */
-  line-clamp: 2; /* Standard property for compatibility */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .label-strong {
   font-weight: bold;
-  color: #000; /* 或用其他更深的顏色如 #111, #222 視需求調整 */
+  color: #000;
 }
 
+/* --------------------------- 列印 --------------------------- */
 @media print {
   .no-print {
     display: none !important;
   }
+
+  /* A4 直向，留 4 mm 邊距 */
   .print-page {
-    width: 210mm; /* A4 width */
-    height: 280mm; /* A4 height */
-    padding-left: 4mm; /* Adjust as needed */
-    padding-right: 4mm; /* Adjust as needed */
+    width: 210mm;
+    height: 280mm;
+    padding: 4mm;
     box-sizing: border-box;
-    page-break-after: always; /* Ensure page breaks when printing */
+
+    /* 讓內容垂直置中 */
+    display: flex !important;
+    flex-direction: column;
   }
-  .print-full-width {
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
+
+  /* 核心：page-body 加 margin:auto → 在 flex 容器中上下置中 */
+  .page-body {
+    margin: auto 0;
+    width: 100%;
   }
+
+  /* 每頁自動分隔 */
+  .print-page {
+    page-break-after: always;
+  }
+
+  /* 列印行高較密 */
   :deep(.v-data-table.row-height-26 tr),
   :deep(.v-data-table.row-height-26 td) {
     height: 60px !important;
   }
-}
 
-.fixed-two-line {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  /* 固定兩行高度 */
-  line-height: 1.5em; /* 可視實際字體微調 */
-  min-height: 3em; /* 1.5em * 2 = 兩行高度 */
-}
-
-.fixed-three-line {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  /* 固定兩行高度 */
-  line-height: 1.5em; /* 可視實際字體微調 */
-  min-height: 4.5em; /* 1.5em * 2 = 兩行高度 */
+  /* 若要表格邊框更靠攏可再加下列設定 */
+  /* .print-table  { border-collapse: collapse !important; } */
 }
 </style>
