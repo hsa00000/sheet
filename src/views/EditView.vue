@@ -29,6 +29,7 @@
       <v-col cols="12" xl="6">
         <v-card>
           <v-list>
+            <!-- 活動名稱 -->
             <v-list-item>
               <template #prepend>
                 <v-list-item-action start>
@@ -41,12 +42,14 @@
               <v-text-field
                 :model-value="activityStore.name"
                 @update:model-value="activityStore.setName"
+                :disabled="!activityStore.showName"
                 label="活動名稱"
                 variant="underlined"
                 dense
               ></v-text-field>
             </v-list-item>
 
+            <!-- 活動日期 -->
             <v-list-item>
               <template #prepend>
                 <v-list-item-action start>
@@ -59,12 +62,14 @@
               <v-text-field
                 :model-value="activityStore.period"
                 @update:model-value="activityStore.setPeriod"
+                :disabled="!activityStore.showPeriod"
                 label="活動日期"
                 variant="underlined"
                 dense
               ></v-text-field>
             </v-list-item>
 
+            <!-- 活動地點 -->
             <v-list-item>
               <template #prepend>
                 <v-list-item-action start>
@@ -77,6 +82,7 @@
               <v-text-field
                 :model-value="activityStore.location"
                 @update:model-value="activityStore.setLocation"
+                :disabled="!activityStore.showLocation"
                 label="活動地點"
                 variant="underlined"
                 dense
