@@ -29,6 +29,26 @@
       <v-col cols="12" xl="6">
         <v-card>
           <v-list>
+            <!-- 活動標題 -->
+            <v-list-item>
+              <template #prepend>
+                <v-list-item-action start>
+                  <v-checkbox-btn
+                    :model-value="activityStore.showTitle"
+                    @update:model-value="activityStore.setShowTitle"
+                  />
+                </v-list-item-action>
+              </template>
+              <v-text-field
+                :model-value="activityStore.title"
+                @update:model-value="activityStore.setTitle"
+                :disabled="!activityStore.showTitle"
+                label="標題"
+                variant="underlined"
+                dense
+              ></v-text-field>
+            </v-list-item>
+
             <!-- 活動名稱 -->
             <v-list-item>
               <template #prepend>

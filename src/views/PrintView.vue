@@ -16,8 +16,11 @@
           >
             <!-- 用 page-body 包住真正要放版面的內容 -->
             <div class="page-body">
-              <h1 class="font-weight-bold text-center fixed-two-line-truncate">
-                {{ `${activityStore.name} 簽到表` }}
+              <h1
+                v-if="activityStore.showTitle"
+                class="font-weight-bold text-center fixed-two-line-truncate"
+              >
+                {{ `${activityStore.title}` }}
               </h1>
 
               <v-card-text class="text-body-1">

@@ -14,9 +14,14 @@ interface ModeState {
 }
 
 interface ActivityState {
+  title: string
   name: string
   period: string
   location: string
+  showTitle: boolean
+  showName: boolean
+  showPeriod: boolean
+  showLocation: boolean
 }
 
 interface EmptyPageNumberState {
@@ -119,7 +124,23 @@ export const loadActivityState = async (): Promise<ActivityState | null> => {
   const request = tx.objectStore(STORE_NAME).get(ACTIVITY_KEY)
 
   return new Promise((resolve) => {
-    request.onsuccess = () => resolve(request.result ?? null)
+    request.onsuccess = () => {
+      const result = request.result
+      if (!result) return resolve(null)
+
+      const activity: ActivityState = {
+        title: result.title ?? '',
+        name: result.name ?? '',
+        period: result.period ?? '',
+        location: result.location ?? '',
+        showTitle: result.showTitle ?? true,
+        showName: result.showName ?? true,
+        showPeriod: result.showPeriod ?? true,
+        showLocation: result.showLocation ?? true,
+      }
+
+      resolve(activity)
+    }
     request.onerror = () => resolve(null)
   })
 }

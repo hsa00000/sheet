@@ -67,9 +67,14 @@ function logShareUrl() {
       displayExtendedAsRegular: modeStore.displayExtendedAsRegular,
     },
     activityState: {
+      title: activityStore.title,
       name: activityStore.name,
       period: activityStore.period,
       location: activityStore.location,
+      showTitle: activityStore.showTitle,
+      showName: activityStore.showName,
+      showPeriod: activityStore.showPeriod,
+      showLocation: activityStore.showLocation,
     },
     emptyPageNumber: emptyPageNumberStore.emptyPageNumber,
   }
@@ -88,7 +93,6 @@ function logShareUrl() {
       messageStore.error('無法複製分享連結，請手動複製')
     })
 }
-
 onMounted(async () => {
   const encoded = location.hash.match(/data=([^&]+)/)?.[1]
 
