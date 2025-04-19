@@ -1,6 +1,6 @@
 <template>
   <v-container class="d-flex justify-center align-center">
-    <v-row class="w-100">
+    <v-row>
       <v-toolbar class="no-print px-2 w-100">
         <v-slide-group show-arrows class="flex-grow-1">
           <v-slide-group-item>
