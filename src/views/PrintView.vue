@@ -16,18 +16,18 @@
           >
             <!-- 用 page-body 包住真正要放版面的內容 -->
             <div class="page-body">
-              <h1 class="font-weight-bold text-center">
+              <h1 class="font-weight-bold text-center fixed-two-line-truncate">
                 {{ `${activityStore.name} 簽到表` }}
               </h1>
 
               <v-card-text class="text-body-1">
-                <p class="text-h5" v-if="activityStore.showName">
+                <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showName">
                   <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
                 </p>
-                <p class="text-h5" v-if="activityStore.showPeriod">
+                <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showPeriod">
                   <span class="label-strong">活動期間：</span>{{ activityStore.period }}
                 </p>
-                <p class="text-h5" v-if="activityStore.showLocation">
+                <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showLocation">
                   <span class="label-strong">活動地點：</span>{{ activityStore.location }}
                 </p>
               </v-card-text>
@@ -117,21 +117,18 @@ const paginatedItems = computed(() => {
   color: #000;
 }
 
-/* --------------------------- 列印 --------------------------- */
 @media print {
   .no-print {
     display: none !important;
   }
 
-  /* A4 直向，留 4 mm 邊距 */
   .print-page {
     width: 210mm;
-    height: 280mm;
-    padding: 4mm;
+    min-height: 290mm;
+    padding: 0 4mm;
     box-sizing: border-box;
-
-    /* 讓內容垂直置中 */
     display: flex !important;
+    page-break-after: always; /* 每頁自動分隔 */
   }
 
   /* 核心：page-body 加 margin:auto → 在 flex 容器中上下置中 */
@@ -139,10 +136,15 @@ const paginatedItems = computed(() => {
     margin: auto 0;
     width: 100%;
   }
-
-  /* 每頁自動分隔 */
-  .print-page {
-    page-break-after: always;
-  }
+}
+.fixed-two-line-truncate {
+  display: -webkit-box;
+  display: box; /* 不常見，但部分舊瀏覽器可能需要 */
+  -webkit-box-orient: vertical;
+  box-orient: vertical; /* 同上：較舊的標準草案 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2; /* 目前實際支援的主力 */
+  line-clamp: 2; /* 標準屬性，未廣泛支援，但可預先寫好 */
 }
 </style>
