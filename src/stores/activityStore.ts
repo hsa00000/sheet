@@ -1,11 +1,23 @@
+// stores/activityStore.ts
+
 import { defineStore } from 'pinia'
 import { saveActivityState } from '@/db/db'
 
 export const useActivityStore = defineStore('activity', {
-  state: (): { name: string; period: string; location: string } => ({
+  state: (): {
+    name: string
+    period: string
+    location: string
+    showName: boolean
+    showPeriod: boolean
+    showLocation: boolean
+  } => ({
     name: '',
     period: '',
     location: '',
+    showName: true,
+    showPeriod: true,
+    showLocation: true,
   }),
   actions: {
     setName(value: string) {
@@ -18,6 +30,18 @@ export const useActivityStore = defineStore('activity', {
     },
     setLocation(value: string) {
       this.location = value
+      this._save()
+    },
+    setShowName(value: boolean) {
+      this.showName = value
+      this._save()
+    },
+    setShowPeriod(value: boolean) {
+      this.showPeriod = value
+      this._save()
+    },
+    setShowLocation(value: boolean) {
+      this.showLocation = value
       this._save()
     },
     loadFromDb(payload: { name: string; period: string; location: string }) {

@@ -3,55 +3,86 @@
     <v-row>
       <v-col cols="12" xl="3">
         <!-- 勾選 -->
-        <v-list-item>
-          <v-list-item-action start>
-            <v-checkbox-btn
-              :model-value="modeStore.enableFood"
-              @update:model-value="modeStore.setEnableFood"
-              label="顯示用餐資訊"
-            />
-          </v-list-item-action>
-        </v-list-item>
+        <v-list>
+          <v-list-item>
+            <v-list-item-action start>
+              <v-checkbox-btn
+                :model-value="modeStore.enableFood"
+                @update:model-value="modeStore.setEnableFood"
+                label="顯示用餐資訊"
+              />
+            </v-list-item-action>
+          </v-list-item>
 
-        <v-list-item>
-          <v-list-item-action start>
-            <v-checkbox-btn
-              :model-value="modeStore.displayExtendedAsRegular"
-              @update:model-value="modeStore.setDisplayExtendedAsRegular"
-              label="顯示「數學延」為「數學四」"
-            />
-          </v-list-item-action>
-        </v-list-item>
+          <v-list-item>
+            <v-list-item-action start>
+              <v-checkbox-btn
+                :model-value="modeStore.displayExtendedAsRegular"
+                @update:model-value="modeStore.setDisplayExtendedAsRegular"
+                label="顯示「數學延」為「數學四」"
+              />
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
       </v-col>
 
       <v-col cols="12" xl="6">
         <v-card>
-          <v-card-text>
-            <v-text-field
-              :model-value="activityStore.name"
-              @update:model-value="activityStore.setName"
-              label="活動名稱"
-              variant="underlined"
-              dense
-            ></v-text-field>
+          <v-list>
+            <v-list-item>
+              <template #prepend>
+                <v-list-item-action start>
+                  <v-checkbox-btn
+                    :model-value="activityStore.showName"
+                    @update:model-value="activityStore.setShowName"
+                  />
+                </v-list-item-action>
+              </template>
+              <v-text-field
+                :model-value="activityStore.name"
+                @update:model-value="activityStore.setName"
+                label="活動名稱"
+                variant="underlined"
+                dense
+              ></v-text-field>
+            </v-list-item>
 
-            <v-text-field
-              :model-value="activityStore.period"
-              @update:model-value="activityStore.setPeriod"
-              label="活動日期"
-              variant="underlined"
-              dense
-            ></v-text-field>
+            <v-list-item>
+              <template #prepend>
+                <v-list-item-action start>
+                  <v-checkbox-btn
+                    :model-value="activityStore.showPeriod"
+                    @update:model-value="activityStore.setShowPeriod"
+                  />
+                </v-list-item-action>
+              </template>
+              <v-text-field
+                :model-value="activityStore.period"
+                @update:model-value="activityStore.setPeriod"
+                label="活動日期"
+                variant="underlined"
+                dense
+              ></v-text-field>
+            </v-list-item>
 
-            <v-text-field
-              :model-value="activityStore.location"
-              @update:model-value="activityStore.setLocation"
-              label="活動地點"
-              variant="underlined"
-              dense
-            ></v-text-field>
-          </v-card-text>
-
+            <v-list-item>
+              <template #prepend>
+                <v-list-item-action start>
+                  <v-checkbox-btn
+                    :model-value="activityStore.showLocation"
+                    @update:model-value="activityStore.setShowLocation"
+                  />
+                </v-list-item-action>
+              </template>
+              <v-text-field
+                :model-value="activityStore.location"
+                @update:model-value="activityStore.setLocation"
+                label="活動地點"
+                variant="underlined"
+                dense
+              ></v-text-field>
+            </v-list-item>
+          </v-list>
           <v-data-table
             :headers="tableHeaders"
             :items="participantStore.participantList"
