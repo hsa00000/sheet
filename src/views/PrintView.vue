@@ -21,13 +21,13 @@
               </h1>
 
               <v-card-text class="text-body-1">
-                <p class="text-h5">
+                <p class="text-h5" v-if="activityStore.showName">
                   <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
                 </p>
-                <p class="text-h5">
+                <p class="text-h5" v-if="activityStore.showPeriod">
                   <span class="label-strong">活動期間：</span>{{ activityStore.period }}
                 </p>
-                <p class="text-h5">
+                <p class="text-h5" v-if="activityStore.showLocation">
                   <span class="label-strong">活動地點：</span>{{ activityStore.location }}
                 </p>
               </v-card-text>
