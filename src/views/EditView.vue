@@ -83,7 +83,7 @@
                 :model-value="activityStore.period"
                 @update:model-value="activityStore.setPeriod"
                 :disabled="!activityStore.showPeriod"
-                label="活動日期"
+                label="活動期間"
                 variant="underlined"
                 dense
               ></v-text-field>
