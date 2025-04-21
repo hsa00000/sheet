@@ -26,9 +26,9 @@
       分享
     </v-btn>
   </v-toolbar>
-  <v-container class="d-flex justify-center align-center">
-    <v-row>
-      <v-col>
+  <v-container class="d-flex justify-center align-center print-only-pt-mt">
+    <v-row class="print-only-pt-mt">
+      <v-col class="print-only-pt-mt">
         <router-view v-slot="{ Component }">
           <KeepAlive include="EditView,PrintView">
             <component :is="Component" />
@@ -168,6 +168,11 @@ onMounted(async () => {
 @media print {
   .no-print {
     display: none;
+  }
+
+  .print-only-pt-mt {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 }
 </style>

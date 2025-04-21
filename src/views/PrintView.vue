@@ -1,7 +1,7 @@
 <template>
-  <v-container>
-    <v-row class="d-flex justify-center">
-      <v-col cols="12" lg="6" class="print-full-width">
+  <v-container class="print-only-pt-mt">
+    <v-row class="d-flex justify-center print-only-pt-mt">
+      <v-col cols="12" lg="6" class="print-full-width print-only-pt-mt">
         <v-card variant="text">
           <v-card-title class="no-print d-flex justify-center">
             直接使用 Chrome 列印即可
@@ -138,6 +138,11 @@ const paginatedItems = computed(() => {
   .page-body {
     margin: auto 0;
     width: 100%;
+  }
+
+  .print-only-pt-mt {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 }
 .fixed-two-line-truncate {
