@@ -7,20 +7,18 @@
             直接使用 Chrome 列印即可
           </v-card-title>
 
-          <!-- 每張要列印的頁面 -->
           <v-card
             v-for="(pageItems, pageIndex) in paginatedItems"
             :key="pageIndex"
             class="print-page"
             variant="text"
           >
-            <!-- 用 page-body 包住真正要放版面的內容 -->
             <div class="page-body">
               <h1
                 v-if="activityStore.showTitle"
                 class="font-weight-bold text-center fixed-two-line-truncate"
               >
-                {{ `${activityStore.title}` }}
+                {{ activityStore.title }}
               </h1>
 
               <v-card-text class="text-body-1">
@@ -35,29 +33,37 @@
                 </p>
               </v-card-text>
 
-              <v-data-table
-                :headers="headers"
-                :items="pageItems"
-                class="print-table row-height-26 text-center text-black"
-                :items-per-page="itemsPerPage"
-              >
-                <!-- 部門名稱轉換 -->
-                <template #[`item.department`]="{ item }">
-                  {{
-                    modeStore.displayExtendedAsRegular && item.department === '數學延'
-                      ? '數學四'
-                      : item.department
-                  }}
-                </template>
-
-                <!-- 連續流水號 -->
-                <template #[`item.index`]="{ index }">
-                  {{ pageIndex * itemsPerPage + index + 1 }}
-                </template>
-
-                <!-- 移除資料表底部空白 -->
-                <template #bottom />
-              </v-data-table>
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>學號</th>
+                    <th>單位</th>
+                    <th>姓名</th>
+                    <th>簽名</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template v-for="(entry, i) in pageItems" :key="i">
+                    <tr v-if="!entry._isCompanion">
+                      <td :rowspan="entry.companion + 1">{{ entry.displayIndex }}</td>
+                      <td :rowspan="entry.companion + 1">{{ entry.id }}</td>
+                      <td :rowspan="entry.companion + 1">
+                        {{
+                          modeStore.displayExtendedAsRegular && entry.department === '數學延'
+                            ? '數學四'
+                            : entry.department
+                        }}
+                      </td>
+                      <td :rowspan="entry.companion + 1">{{ entry.name }}</td>
+                      <td style="height: 70px"></td>
+                    </tr>
+                    <tr v-for="n in entry.companion" :key="`companion-${i}-${n}`">
+                      <td style="height: 70px"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
             </div>
           </v-card>
         </v-card>
@@ -72,7 +78,6 @@ import { useActivityStore } from '@/stores/activityStore'
 import { useParticipantStore } from '@/stores/participantStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 import { useModeStore } from '@/stores/modeStore'
-import { headers } from '@/script/computeHeader'
 import { itemsPerPage } from '@/const/const'
 import type { Participant } from '@/type/type'
 
@@ -81,22 +86,52 @@ const participantStore = useParticipantStore()
 const emptyPageNumberStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
-/** 依 itemsPerPage 分頁並補足空白列 */
+type ExtendedParticipant = Participant & {
+  _isCompanion?: boolean
+  displayIndex?: number
+}
+
 const paginatedItems = computed(() => {
-  const combined = [...participantStore.participantList]
+  const expanded: ExtendedParticipant[] = []
+  let globalIndex = 1
 
-  const blankCount =
-    Math.ceil(combined.length / 10) * 10 -
-    combined.length +
-    emptyPageNumberStore.emptyPageNumber * 10
-
-  for (let i = 0; i < blankCount; i++) {
-    combined.push({ id: '', department: '', name: '', food: '' } as Participant)
+  for (const p of participantStore.participantList) {
+    expanded.push({
+      ...p,
+      _isCompanion: false,
+      displayIndex: globalIndex++,
+    })
+    // 不加入 companion 資料，只生成簽名欄行數
+    for (let i = 0; i < p.companion; i++) {
+      expanded.push({
+        id: '',
+        department: '',
+        name: '',
+        food: '',
+        companion: 0,
+        _isCompanion: true,
+      })
+    }
   }
 
-  const pages: Participant[][] = []
-  for (let i = 0; i < combined.length; i += itemsPerPage) {
-    pages.push(combined.slice(i, i + itemsPerPage))
+  const totalRows = Math.ceil(expanded.length / itemsPerPage) * itemsPerPage
+  const blankRows = totalRows - expanded.length + emptyPageNumberStore.emptyPageNumber * 10
+
+  for (let i = 0; i < blankRows; i++) {
+    expanded.push({
+      id: '',
+      department: '',
+      name: '',
+      food: '',
+      companion: 0,
+      _isCompanion: false,
+      displayIndex: globalIndex++,
+    })
+  }
+
+  const pages: ExtendedParticipant[][] = []
+  for (let i = 0; i < expanded.length; i += itemsPerPage) {
+    pages.push(expanded.slice(i, i + itemsPerPage))
   }
 
   return pages
@@ -104,15 +139,18 @@ const paginatedItems = computed(() => {
 </script>
 
 <style scoped>
-/* ----------------------- 一般畫面設定 ----------------------- */
-:deep(.v-data-table.row-height-26 tr),
-:deep(.v-data-table.row-height-26 td) {
-  height: 70px !important;
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14pt;
+  color: black;
 }
 
-.v-data-table,
-.v-card-text {
-  font-size: 14pt;
+.custom-table th,
+.custom-table td {
+  border: 1px solid black;
+  text-align: center;
+  padding: 6px;
 }
 
 .label-strong {
@@ -131,10 +169,9 @@ const paginatedItems = computed(() => {
     padding: 0 4mm;
     box-sizing: border-box;
     display: flex !important;
-    page-break-after: always; /* 每頁自動分隔 */
+    page-break-after: always;
   }
 
-  /* 核心：page-body 加 margin:auto → 在 flex 容器中上下置中 */
   .page-body {
     margin: auto 0;
     width: 100%;
@@ -145,14 +182,15 @@ const paginatedItems = computed(() => {
     margin-top: 0 !important;
   }
 }
+
 .fixed-two-line-truncate {
   display: -webkit-box;
-  display: box; /* 不常見，但部分舊瀏覽器可能需要 */
+  display: box;
   -webkit-box-orient: vertical;
-  box-orient: vertical; /* 同上：較舊的標準草案 */
+  box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  -webkit-line-clamp: 2; /* 目前實際支援的主力 */
-  line-clamp: 2; /* 標準屬性，未廣泛支援，但可預先寫好 */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 </style>
