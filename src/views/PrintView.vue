@@ -3,10 +3,12 @@
     <v-row class="d-flex justify-center print-only-pt-mt">
       <v-col cols="12" lg="6" class="print-full-width print-only-pt-mt">
         <v-card variant="text">
+          <!-- 列印提示 -->
           <v-card-title class="no-print d-flex justify-center">
             直接使用 Chrome 列印即可
           </v-card-title>
 
+          <!-- 每一頁 -->
           <v-card
             v-for="(pageItems, pageIndex) in paginatedItems"
             :key="pageIndex"
@@ -14,6 +16,7 @@
             variant="text"
           >
             <div class="page-body">
+              <!-- 活動標題／基本資料 -->
               <h1
                 v-if="activityStore.showTitle"
                 class="font-weight-bold text-center fixed-two-line-truncate"
@@ -23,16 +26,20 @@
 
               <v-card-text class="text-body-1">
                 <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showName">
-                  <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
+                  <span class="label-strong">活動名稱：</span>
+                  {{ activityStore.name }}
                 </p>
                 <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showPeriod">
-                  <span class="label-strong">活動期間：</span>{{ activityStore.period }}
+                  <span class="label-strong">活動期間：</span>
+                  {{ activityStore.period }}
                 </p>
                 <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showLocation">
-                  <span class="label-strong">活動地點：</span>{{ activityStore.location }}
+                  <span class="label-strong">活動地點：</span>
+                  {{ activityStore.location }}
                 </p>
               </v-card-text>
 
+              <!-- 自訂表格 -->
               <table class="custom-table">
                 <thead>
                   <tr>
@@ -43,22 +50,26 @@
                     <th>簽名</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  <template v-for="(entry, i) in pageItems" :key="i">
-                    <tr v-if="!entry._isCompanion">
-                      <td :rowspan="entry.companion + 1">{{ entry.displayIndex }}</td>
-                      <td :rowspan="entry.companion + 1">{{ entry.id }}</td>
-                      <td :rowspan="entry.companion + 1">
+                  <template v-for="(row, idx) in pageItems" :key="idx">
+                    <!-- 主資料列 -->
+                    <tr v-if="!row._isCompanion">
+                      <td :rowspan="row._rowspan">{{ row._displayIndex }}</td>
+                      <td :rowspan="row._rowspan">{{ row.id }}</td>
+                      <td :rowspan="row._rowspan">
                         {{
-                          modeStore.displayExtendedAsRegular && entry.department === '數學延'
+                          modeStore.displayExtendedAsRegular && row.department === '數學延'
                             ? '數學四'
-                            : entry.department
+                            : row.department
                         }}
                       </td>
-                      <td :rowspan="entry.companion + 1">{{ entry.name }}</td>
+                      <td :rowspan="row._rowspan">{{ row.name }}</td>
                       <td style="height: 70px"></td>
                     </tr>
-                    <tr v-for="n in entry.companion" :key="`companion-${i}-${n}`">
+
+                    <!-- 攜伴簽名列 -->
+                    <tr v-else>
                       <td style="height: 70px"></td>
                     </tr>
                   </template>
@@ -86,52 +97,102 @@ const participantStore = useParticipantStore()
 const emptyPageNumberStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
-type ExtendedParticipant = Participant & {
-  _isCompanion?: boolean
-  displayIndex?: number
+/** 供表格渲染使用的擴充型別 */
+type Row = Participant & {
+  _isCompanion: boolean // 是否攜伴簽名列
+  _rowspan?: number // 主資料列在本頁要跨幾行
+  _displayIndex?: number // 編號（主資料列才有）
 }
 
+/** 依 itemsPerPage 分頁；主資料列 + 攜伴列可跨頁 */
 const paginatedItems = computed(() => {
-  const expanded: ExtendedParticipant[] = []
-  let globalIndex = 1
+  const pages: Row[][] = [] // 最終分頁結果
+  let currentPage: Row[] = [] // 當前頁內容
+  let remain = itemsPerPage // 當前頁尚可放幾行
+  let globalIndex = 1 // 主資料列編號
 
-  for (const p of participantStore.participantList) {
-    expanded.push({
-      ...p,
-      _isCompanion: false,
-      displayIndex: globalIndex++,
-    })
-    // 不加入 companion 資料，只生成簽名欄行數
-    for (let i = 0; i < p.companion; i++) {
-      expanded.push({
+  /** 將目前頁 push 後清空 */
+  const pushPage = () => {
+    // 補最後一頁空白行
+    while (currentPage.length < itemsPerPage) {
+      currentPage.push({
         id: '',
         department: '',
         name: '',
         food: '',
         companion: 0,
-        _isCompanion: true,
+        _isCompanion: false,
+        _displayIndex: globalIndex++,
       })
+    }
+    pages.push(currentPage)
+    currentPage = []
+    remain = itemsPerPage
+  }
+
+  // 逐筆參加者資料處理
+  for (const p of participantStore.participantList) {
+    let companionsLeft = p.companion
+    let firstChunk = true // 是否為此人第一段
+
+    while (true) {
+      // 若當前頁已滿，先推頁
+      if (remain === 0) pushPage()
+
+      // 此頁能放多少攜伴列（必須保留 1 行給主資料）
+      const capacity = Math.min(companionsLeft, remain - 1)
+      const rowspan = capacity + 1
+
+      // 建立主資料列
+      currentPage.push({
+        ...p,
+        _isCompanion: false,
+        _rowspan: rowspan,
+        _displayIndex: firstChunk ? globalIndex : undefined, // 只有第一段顯示編號
+      })
+      remain--
+
+      // 插入攜伴列
+      for (let i = 0; i < capacity; i++) {
+        currentPage.push({
+          id: '',
+          department: '',
+          name: '',
+          food: '',
+          companion: 0,
+          _isCompanion: true,
+        })
+        remain--
+      }
+
+      companionsLeft -= capacity
+      firstChunk = false
+
+      // 攜伴列已插完就跳出
+      if (companionsLeft === 0) {
+        globalIndex++
+        break
+      }
     }
   }
 
-  const totalRows = Math.ceil(expanded.length / itemsPerPage) * itemsPerPage
-  const blankRows = totalRows - expanded.length + emptyPageNumberStore.emptyPageNumber * 10
+  // push 最後一頁
+  if (currentPage.length) pushPage()
 
-  for (let i = 0; i < blankRows; i++) {
-    expanded.push({
-      id: '',
-      department: '',
-      name: '',
-      food: '',
-      companion: 0,
-      _isCompanion: false,
-      displayIndex: globalIndex++,
-    })
-  }
-
-  const pages: ExtendedParticipant[][] = []
-  for (let i = 0; i < expanded.length; i += itemsPerPage) {
-    pages.push(expanded.slice(i, i + itemsPerPage))
+  // 額外空白頁
+  const extraBlankPages = emptyPageNumberStore.emptyPageNumber
+  for (let i = 0; i < extraBlankPages; i++) {
+    pages.push(
+      Array.from({ length: itemsPerPage }, () => ({
+        id: '',
+        department: '',
+        name: '',
+        food: '',
+        companion: 0,
+        _isCompanion: false,
+        _displayIndex: globalIndex++,
+      })),
+    )
   }
 
   return pages
