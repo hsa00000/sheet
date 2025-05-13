@@ -4,7 +4,9 @@ import { computed } from 'vue'
 
 export const headers = computed(() => {
   const modeStore = useModeStore()
-  return modeStore.enableFood
-    ? BASE_HEADERS
-    : BASE_HEADERS.filter((header) => header.value !== 'food')
+  return BASE_HEADERS.filter((header) => {
+    if (!modeStore.enableFood && header.value === 'food') return false
+    if (!modeStore.displayCompanion && header.value === 'companion') return false
+    return true
+  })
 })
