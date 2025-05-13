@@ -27,6 +27,15 @@
               </v-list-item-action>
             </template>
           </v-list-item>
+          <v-list-item>
+            <v-list-item-action start>
+              <v-checkbox-btn
+                :model-value="modeStore.displayCompanion"
+                @update:model-value="modeStore.setDisplayCompanion"
+                label="顯示攜伴"
+              />
+            </v-list-item-action>
+          </v-list-item>
         </v-list>
       </v-col>
 
@@ -285,6 +294,7 @@ const addOutsider = () => {
       department: '校外人士',
       name,
       food: '無須用餐',
+      companions: 1,
     })
     newOutsider.value = ''
     saveParticipants(participantStore.participantList)

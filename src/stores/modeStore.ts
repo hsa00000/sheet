@@ -2,9 +2,14 @@ import { defineStore } from 'pinia'
 import { saveModeState } from '@/db/db'
 
 export const useModeStore = defineStore('mode', {
-  state: (): { enableFood: boolean; displayExtendedAsRegular: boolean } => ({
+  state: (): {
+    enableFood: boolean
+    displayExtendedAsRegular: boolean
+    displayCompanion: boolean
+  } => ({
     enableFood: false,
     displayExtendedAsRegular: false,
+    displayCompanion: false,
   }),
   actions: {
     setEnableFood(value: boolean) {
@@ -13,6 +18,10 @@ export const useModeStore = defineStore('mode', {
     },
     setDisplayExtendedAsRegular(value: boolean) {
       this.displayExtendedAsRegular = value
+      this._save()
+    },
+    setDisplayCompanion(value: boolean) {
+      this.displayCompanion = value
       this._save()
     },
     loadFromDb(payload: { enableFood: boolean; displayExtendedAsRegular: boolean }) {

@@ -3,6 +3,7 @@ export interface Participant {
   department: string
   name: string
   food: string
+  companions: number
 }
 export interface Header {
   title: string
