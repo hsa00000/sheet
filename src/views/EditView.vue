@@ -210,7 +210,7 @@
           label="額外空白簽到頁數"
           :min="0"
           :step="1"
-          control-variant="default"
+          control-variant="stacked"
           hide-details
           class="mb-5"
         />
