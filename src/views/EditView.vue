@@ -5,23 +5,27 @@
         <!-- 勾選 -->
         <v-list>
           <v-list-item>
-            <v-list-item-action start>
-              <v-checkbox-btn
-                :model-value="modeStore.enableFood"
-                @update:model-value="modeStore.setEnableFood"
-                label="顯示用餐資訊"
-              />
-            </v-list-item-action>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.enableFood"
+                  @update:model-value="modeStore.setEnableFood"
+                  label="顯示用餐資訊"
+                />
+              </v-list-item-action>
+            </template>
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-action start>
-              <v-checkbox-btn
-                :model-value="modeStore.displayExtendedAsRegular"
-                @update:model-value="modeStore.setDisplayExtendedAsRegular"
-                label="顯示「數學延」為「數學四」"
-              />
-            </v-list-item-action>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.displayExtendedAsRegular"
+                  @update:model-value="modeStore.setDisplayExtendedAsRegular"
+                  label="顯示「數學延」為「數學四」"
+                />
+              </v-list-item-action>
+            </template>
           </v-list-item>
         </v-list>
       </v-col>
