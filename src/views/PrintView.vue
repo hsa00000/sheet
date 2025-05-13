@@ -26,16 +26,13 @@
 
               <v-card-text class="text-body-1">
                 <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showName">
-                  <span class="label-strong">活動名稱：</span>
-                  {{ activityStore.name }}
+                  <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
                 </p>
                 <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showPeriod">
-                  <span class="label-strong">活動期間：</span>
-                  {{ activityStore.period }}
+                  <span class="label-strong">活動期間：</span>{{ activityStore.period }}
                 </p>
                 <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showLocation">
-                  <span class="label-strong">活動地點：</span>
-                  {{ activityStore.location }}
+                  <span class="label-strong">活動地點：</span>{{ activityStore.location }}
                 </p>
               </v-card-text>
 
@@ -48,6 +45,7 @@
                     <th>單位</th>
                     <th>姓名</th>
                     <th>簽名</th>
+                    <th>攜伴</th>
                   </tr>
                 </thead>
 
@@ -65,11 +63,17 @@
                         }}
                       </td>
                       <td :rowspan="row._rowspan">{{ row.name }}</td>
+                      <!-- 本人簽名 -->
+                      <td style="height: 70px"></td>
+                      <!-- 攜伴欄留空 (不合併) -->
                       <td style="height: 70px"></td>
                     </tr>
 
                     <!-- 攜伴簽名列 -->
                     <tr v-else>
+                      <!-- 簽名欄留空 -->
+                      <td style="height: 70px"></td>
+                      <!-- 攜伴簽名 -->
                       <td style="height: 70px"></td>
                     </tr>
                   </template>
@@ -97,23 +101,21 @@ const participantStore = useParticipantStore()
 const emptyPageNumberStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
-/** 供表格渲染使用的擴充型別 */
+/* ========= 型別 ========= */
 type Row = Participant & {
-  _isCompanion: boolean // 是否攜伴簽名列
-  _rowspan?: number // 主資料列在本頁要跨幾行
-  _displayIndex?: number // 編號（主資料列才有）
+  _isCompanion: boolean
+  _rowspan?: number
+  _displayIndex?: number
 }
 
-/** 依 itemsPerPage 分頁；主資料列 + 攜伴列可跨頁 */
+/* ========= 分頁邏輯 ========= */
 const paginatedItems = computed(() => {
-  const pages: Row[][] = [] // 最終分頁結果
-  let currentPage: Row[] = [] // 當前頁內容
-  let remain = itemsPerPage // 當前頁尚可放幾行
-  let globalIndex = 1 // 主資料列編號
+  const pages: Row[][] = []
+  let currentPage: Row[] = []
+  let remain = itemsPerPage
+  let globalIndex = 1
 
-  /** 將目前頁 push 後清空 */
   const pushPage = () => {
-    // 補最後一頁空白行
     while (currentPage.length < itemsPerPage) {
       currentPage.push({
         id: '',
@@ -130,30 +132,28 @@ const paginatedItems = computed(() => {
     remain = itemsPerPage
   }
 
-  // 逐筆參加者資料處理
+  // 逐筆處理
   for (const p of participantStore.participantList) {
-    let companionsLeft = p.companion
-    let firstChunk = true // 是否為此人第一段
+    let companionsLeft = p.companion //  ≥ 1 已保證
+    let firstChunk = true
 
-    while (true) {
-      // 若當前頁已滿，先推頁
+    while (companionsLeft > 0) {
       if (remain === 0) pushPage()
 
-      // 此頁能放多少攜伴列（必須保留 1 行給主資料）
-      const capacity = Math.min(companionsLeft, remain - 1)
-      const rowspan = capacity + 1
+      /* ✅ 本頁可容納的「總列數」（本人 + 攜伴） */
+      const capacity = Math.min(companionsLeft, remain)
 
-      // 建立主資料列
+      /* ✅ rowspan = capacity（不再 +1） */
       currentPage.push({
         ...p,
         _isCompanion: false,
-        _rowspan: rowspan,
-        _displayIndex: firstChunk ? globalIndex : undefined, // 只有第一段顯示編號
+        _rowspan: capacity,
+        _displayIndex: firstChunk ? globalIndex : undefined,
       })
-      remain--
+      remain-- // 已放本人
 
-      // 插入攜伴列
-      for (let i = 0; i < capacity; i++) {
+      /* ✅ 只插入 capacity-1 筆攜伴列 */
+      for (let i = 0; i < capacity - 1; i++) {
         currentPage.push({
           id: '',
           department: '',
@@ -165,23 +165,16 @@ const paginatedItems = computed(() => {
         remain--
       }
 
-      companionsLeft -= capacity
+      companionsLeft -= capacity // 扣掉已處理列數
       firstChunk = false
-
-      // 攜伴列已插完就跳出
-      if (companionsLeft === 0) {
-        globalIndex++
-        break
-      }
     }
+    globalIndex++
   }
 
-  // push 最後一頁
   if (currentPage.length) pushPage()
 
-  // 額外空白頁
-  const extraBlankPages = emptyPageNumberStore.emptyPageNumber
-  for (let i = 0; i < extraBlankPages; i++) {
+  /* 其它：額外空白頁保持不變 */
+  for (let i = 0; i < emptyPageNumberStore.emptyPageNumber; i++) {
     pages.push(
       Array.from({ length: itemsPerPage }, () => ({
         id: '',
