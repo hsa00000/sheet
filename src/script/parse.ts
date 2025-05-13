@@ -18,6 +18,7 @@ export function parseCsvToParticipantList(csvText: string): Participant[] {
         department: String(cleanedRow['單位'] ?? ''),
         name: String(cleanedRow['參加者'] ?? ''),
         food: String(cleanedRow['提供用餐'] ?? ''),
+        companion: 1,
       }
     })
     .filter((item) => {
