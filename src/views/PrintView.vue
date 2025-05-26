@@ -45,14 +45,13 @@
                     <th>單位</th>
                     <th>姓名</th>
                     <th>簽名</th>
-                    <th>攜伴</th>
-                    <th>用餐</th>
+                    <th v-if="modeStore.displayCompanion">攜伴</th>
+                    <th v-if="modeStore.enableFood">用餐</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <template v-for="(row, idx) in pageItems" :key="idx">
-                    <!-- 主資料列 -->
                     <tr v-if="!row._isCompanion">
                       <td :rowspan="row._rowspan">{{ row._displayIndex }}</td>
                       <td :rowspan="row._rowspan">{{ row.id }}</td>
@@ -65,12 +64,11 @@
                       </td>
                       <td :rowspan="row._rowspan">{{ row.name }}</td>
                       <td :rowspan="row._rowspan" style="height: 70px"></td>
-                      <td style="height: 70px"></td>
-                      <td :rowspan="row._rowspan">{{ row.food }}</td>
+                      <td v-if="modeStore.displayCompanion" style="height: 70px"></td>
+                      <td v-if="modeStore.enableFood" :rowspan="row._rowspan">{{ row.food }}</td>
                     </tr>
 
-                    <!-- 攜伴簽名列 -->
-                    <tr v-else>
+                    <tr v-else-if="modeStore.displayCompanion">
                       <td style="height: 70px"></td>
                     </tr>
                   </template>
@@ -128,14 +126,14 @@ const paginatedItems = computed(() => {
   }
 
   for (const p of participantStore.participantList) {
-    let companionsLeft = p.companion
+    const allowCompanion = modeStore.displayCompanion
+    let companionsLeft = allowCompanion ? p.companion : 0
     let firstChunk = true
 
     while (companionsLeft > 0) {
       if (remain === 0) pushPage()
 
       const capacity = Math.min(companionsLeft, remain)
-
       currentPage.push({
         ...p,
         _isCompanion: false,
@@ -159,6 +157,18 @@ const paginatedItems = computed(() => {
       companionsLeft -= capacity
       firstChunk = false
     }
+
+    if (!allowCompanion) {
+      if (remain === 0) pushPage()
+      currentPage.push({
+        ...p,
+        _isCompanion: false,
+        _rowspan: 1,
+        _displayIndex: globalIndex,
+      })
+      remain--
+    }
+
     globalIndex++
   }
 
