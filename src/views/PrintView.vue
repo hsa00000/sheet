@@ -40,12 +40,9 @@
               <table class="custom-table">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>學號</th>
-                    <th>單位</th>
-                    <th>姓名</th>
-                    <th>簽名</th>
-                    <th>攜伴</th>
+                    <th v-for="header in headers" :key="header.value">
+                      {{ header.title }}
+                    </th>
                   </tr>
                 </thead>
 
@@ -94,6 +91,7 @@ import { useParticipantStore } from '@/stores/participantStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 import { useModeStore } from '@/stores/modeStore'
 import { itemsPerPage } from '@/const/const'
+import { headers } from '@/script/computeHeader'
 import type { Participant } from '@/type/type'
 
 const activityStore = useActivityStore()
