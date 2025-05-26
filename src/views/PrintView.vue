@@ -40,9 +40,13 @@
               <table class="custom-table">
                 <thead>
                   <tr>
-                    <th v-for="header in headers" :key="header.value">
-                      {{ header.title }}
-                    </th>
+                    <th>#</th>
+                    <th>學號</th>
+                    <th>單位</th>
+                    <th>姓名</th>
+                    <th>簽名</th>
+                    <th>攜伴</th>
+                    <th>用餐</th>
                   </tr>
                 </thead>
 
@@ -60,17 +64,13 @@
                         }}
                       </td>
                       <td :rowspan="row._rowspan">{{ row.name }}</td>
-
-                      <!-- 本人簽名 ── 讓它跨列 -->
                       <td :rowspan="row._rowspan" style="height: 70px"></td>
-
-                      <!-- 攜伴欄保持單列，不合併 -->
                       <td style="height: 70px"></td>
+                      <td :rowspan="row._rowspan">{{ row.food }}</td>
                     </tr>
 
                     <!-- 攜伴簽名列 -->
                     <tr v-else>
-                      <!-- 只剩下攜伴欄 -->
                       <td style="height: 70px"></td>
                     </tr>
                   </template>
@@ -91,7 +91,6 @@ import { useParticipantStore } from '@/stores/participantStore'
 import { useEmptyPageNumberStore } from '@/stores/emptyPageNumberStore'
 import { useModeStore } from '@/stores/modeStore'
 import { itemsPerPage } from '@/const/const'
-import { headers } from '@/script/computeHeader'
 import type { Participant } from '@/type/type'
 
 const activityStore = useActivityStore()
@@ -99,14 +98,12 @@ const participantStore = useParticipantStore()
 const emptyPageNumberStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
-/* ========= 型別 ========= */
 type Row = Participant & {
   _isCompanion: boolean
   _rowspan?: number
   _displayIndex?: number
 }
 
-/* ========= 分頁邏輯 ========= */
 const paginatedItems = computed(() => {
   const pages: Row[][] = []
   let currentPage: Row[] = []
@@ -130,27 +127,23 @@ const paginatedItems = computed(() => {
     remain = itemsPerPage
   }
 
-  // 逐筆處理
   for (const p of participantStore.participantList) {
-    let companionsLeft = p.companion //  ≥ 1 已保證
+    let companionsLeft = p.companion
     let firstChunk = true
 
     while (companionsLeft > 0) {
       if (remain === 0) pushPage()
 
-      /* ✅ 本頁可容納的「總列數」（本人 + 攜伴） */
       const capacity = Math.min(companionsLeft, remain)
 
-      /* ✅ rowspan = capacity（不再 +1） */
       currentPage.push({
         ...p,
         _isCompanion: false,
         _rowspan: capacity,
         _displayIndex: firstChunk ? globalIndex : undefined,
       })
-      remain-- // 已放本人
+      remain--
 
-      /* ✅ 只插入 capacity-1 筆攜伴列 */
       for (let i = 0; i < capacity - 1; i++) {
         currentPage.push({
           id: '',
@@ -163,7 +156,7 @@ const paginatedItems = computed(() => {
         remain--
       }
 
-      companionsLeft -= capacity // 扣掉已處理列數
+      companionsLeft -= capacity
       firstChunk = false
     }
     globalIndex++
@@ -171,7 +164,6 @@ const paginatedItems = computed(() => {
 
   if (currentPage.length) pushPage()
 
-  /* 其它：額外空白頁保持不變 */
   for (let i = 0; i < emptyPageNumberStore.emptyPageNumber; i++) {
     pages.push(
       Array.from({ length: itemsPerPage }, () => ({
