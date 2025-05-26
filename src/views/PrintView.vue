@@ -9,14 +9,9 @@
           </v-card-title>
 
           <!-- 每一頁 -->
-          <v-card
-            v-for="(pageItems, pageIndex) in paginatedItems"
-            :key="pageIndex"
-            class="print-page"
-            variant="text"
-          >
+          <v-card v-for="(page, pageIdx) in pages" :key="pageIdx" class="print-page" variant="text">
             <div class="page-body">
-              <!-- 活動標題／基本資料 -->
+              <!-- ── 活動標題 / 基本資料 ─────────────────────────── -->
               <h1
                 v-if="activityStore.showTitle"
                 class="font-weight-bold text-center fixed-two-line-truncate"
@@ -25,19 +20,31 @@
               </h1>
 
               <v-card-text class="text-body-1">
-                <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showName">
-                  <span class="label-strong">活動名稱：</span>{{ activityStore.name }}
+                <p v-if="activityStore.showName" class="text-h5 fixed-two-line-truncate">
+                  <span class="label-strong">活動名稱：</span>
+                  {{ activityStore.name }}
                 </p>
-                <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showPeriod">
-                  <span class="label-strong">活動期間：</span>{{ activityStore.period }}
+                <p v-if="activityStore.showPeriod" class="text-h5 fixed-two-line-truncate">
+                  <span class="label-strong">活動期間：</span>
+                  {{ activityStore.period }}
                 </p>
-                <p class="text-h5 fixed-two-line-truncate" v-if="activityStore.showLocation">
-                  <span class="label-strong">活動地點：</span>{{ activityStore.location }}
+                <p v-if="activityStore.showLocation" class="text-h5 fixed-two-line-truncate">
+                  <span class="label-strong">活動地點：</span>
+                  {{ activityStore.location }}
                 </p>
               </v-card-text>
 
-              <!-- 自訂表格 -->
+              <!-- ── 列印表格 ─────────────────────────────────────── -->
               <table class="custom-table">
+                <colgroup>
+                  <col style="width: 5%" />
+                  <col style="width: 15%" />
+                  <col style="width: 15%" />
+                  <col style="width: 15%" />
+                  <col style="width: 15%" />
+                  <col v-if="showCompanion" style="width: 15%" />
+                  <col v-if="showFood" style="width: 15%" />
+                </colgroup>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -45,14 +52,15 @@
                     <th>單位</th>
                     <th>姓名</th>
                     <th>簽名</th>
-                    <th v-if="modeStore.displayCompanion">攜伴</th>
-                    <th v-if="modeStore.enableFood">用餐</th>
+                    <th v-if="showCompanion">攜伴</th>
+                    <th v-if="showFood">用餐</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <template v-for="(row, idx) in pageItems" :key="idx">
+                  <template v-for="(row, rIdx) in page" :key="rIdx">
                     <tr v-if="!row._isCompanion">
+                      <!-- 固定欄 -->
                       <td :rowspan="row._rowspan">{{ row._displayIndex }}</td>
                       <td :rowspan="row._rowspan">{{ row.id }}</td>
                       <td :rowspan="row._rowspan">
@@ -64,11 +72,14 @@
                       </td>
                       <td :rowspan="row._rowspan">{{ row.name }}</td>
                       <td :rowspan="row._rowspan" style="height: 70px"></td>
-                      <td v-if="modeStore.displayCompanion" style="height: 70px"></td>
-                      <td v-if="modeStore.enableFood" :rowspan="row._rowspan">{{ row.food }}</td>
+
+                      <!-- 可選欄 -->
+                      <td v-if="showCompanion" style="height: 70px"></td>
+                      <td v-if="showFood" :rowspan="row._rowspan">{{ row.food }}</td>
                     </tr>
 
-                    <tr v-else-if="modeStore.displayCompanion">
+                    <!-- 攜伴列（只有攜伴欄） -->
+                    <tr v-else-if="showCompanion">
                       <td style="height: 70px"></td>
                     </tr>
                   </template>
@@ -83,6 +94,7 @@
 </template>
 
 <script setup lang="ts">
+// ── Imports ────────────────────────────────────────────────────────────────
 import { computed } from 'vue'
 import { useActivityStore } from '@/stores/activityStore'
 import { useParticipantStore } from '@/stores/participantStore'
@@ -91,105 +103,96 @@ import { useModeStore } from '@/stores/modeStore'
 import { itemsPerPage } from '@/const/const'
 import type { Participant } from '@/type/type'
 
+// ── Pinia Stores ───────────────────────────────────────────────────────────
 const activityStore = useActivityStore()
 const participantStore = useParticipantStore()
-const emptyPageNumberStore = useEmptyPageNumberStore()
+const emptyPageStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
+// ── Reactive Switches ──────────────────────────────────────────────────────
+const showCompanion = computed(() => modeStore.displayCompanion)
+const showFood = computed(() => modeStore.enableFood)
+
+// ── Local Types / Helpers ──────────────────────────────────────────────────
 type Row = Participant & {
   _isCompanion: boolean
   _rowspan?: number
   _displayIndex?: number
 }
 
-const paginatedItems = computed(() => {
+const createBlankRow = (index?: number): Row => ({
+  id: '',
+  department: '',
+  name: '',
+  food: '',
+  companion: 0,
+  _isCompanion: false,
+  _displayIndex: index,
+})
+
+// ── Pagination Core ───────────────────────────────────────────────────────
+function paginate(source: Participant[]): Row[][] {
   const pages: Row[][] = []
-  let currentPage: Row[] = []
+  let page: Row[] = []
   let remain = itemsPerPage
-  let globalIndex = 1
+  let idx = 1
 
   const pushPage = () => {
-    while (currentPage.length < itemsPerPage) {
-      currentPage.push({
-        id: '',
-        department: '',
-        name: '',
-        food: '',
-        companion: 0,
-        _isCompanion: false,
-        _displayIndex: globalIndex++,
-      })
-    }
-    pages.push(currentPage)
-    currentPage = []
+    while (page.length < itemsPerPage) page.push(createBlankRow(idx++))
+    pages.push(page)
+    page = []
     remain = itemsPerPage
   }
 
-  for (const p of participantStore.participantList) {
-    const allowCompanion = modeStore.displayCompanion
-    let companionsLeft = allowCompanion ? p.companion : 0
-    let firstChunk = true
+  for (const p of source) {
+    const companions = showCompanion.value ? p.companion : 0
+    let left = companions
+    let first = true
 
-    while (companionsLeft > 0) {
-      if (remain === 0) pushPage()
-
-      const capacity = Math.min(companionsLeft, remain)
-      currentPage.push({
+    // — 本人 & 可能的攜伴 —
+    const addChunk = (span: number) => {
+      page.push({
         ...p,
         _isCompanion: false,
-        _rowspan: capacity,
-        _displayIndex: firstChunk ? globalIndex : undefined,
+        _rowspan: span,
+        _displayIndex: first ? idx : undefined,
       })
       remain--
-
-      for (let i = 0; i < capacity - 1; i++) {
-        currentPage.push({
-          id: '',
-          department: '',
-          name: '',
-          food: '',
-          companion: 0,
-          _isCompanion: true,
-        })
+      for (let i = 0; i < span - 1; i++) {
+        page.push({ ...createBlankRow(), _isCompanion: true })
         remain--
       }
-
-      companionsLeft -= capacity
-      firstChunk = false
+      first = false
     }
 
-    if (!allowCompanion) {
-      if (remain === 0) pushPage()
-      currentPage.push({
-        ...p,
-        _isCompanion: false,
-        _rowspan: 1,
-        _displayIndex: globalIndex,
-      })
-      remain--
+    while (left > 0) {
+      if (!remain) pushPage()
+      const span = Math.min(left, remain)
+      addChunk(span)
+      left -= span
     }
 
-    globalIndex++
+    // 若不顯示攜伴，至少要放本人一列
+    if (companions === 0) {
+      if (!remain) pushPage()
+      addChunk(1)
+    }
+
+    idx++
   }
 
-  if (currentPage.length) pushPage()
+  if (page.length) pushPage()
 
-  for (let i = 0; i < emptyPageNumberStore.emptyPageNumber; i++) {
-    pages.push(
-      Array.from({ length: itemsPerPage }, () => ({
-        id: '',
-        department: '',
-        name: '',
-        food: '',
-        companion: 0,
-        _isCompanion: false,
-        _displayIndex: globalIndex++,
-      })),
-    )
+  // — 額外空白頁 —
+  for (let i = 0; i < emptyPageStore.emptyPageNumber; i++) {
+    pages.push(Array.from({ length: itemsPerPage }, () => createBlankRow(idx++)))
   }
 
   return pages
-})
+}
+
+// ── Computed Pages (reacts to mode switches) ───────────────────────────────
+const pages = computed(() => paginate(participantStore.participantList))
 </script>
 
 <style scoped>
@@ -212,11 +215,11 @@ const paginatedItems = computed(() => {
   color: #000;
 }
 
+/* ── Print Layout ─────────────────────────────────────────────────────── */
 @media print {
   .no-print {
     display: none !important;
   }
-
   .print-page {
     width: 210mm;
     min-height: 290mm;
@@ -225,23 +228,20 @@ const paginatedItems = computed(() => {
     display: flex !important;
     page-break-after: always;
   }
-
   .page-body {
     margin: auto 0;
     width: 100%;
   }
-
   .print-only-pt-mt {
     padding-top: 0 !important;
     margin-top: 0 !important;
   }
 }
 
+/* ── Helpers ──────────────────────────────────────────────────────────── */
 .fixed-two-line-truncate {
   display: -webkit-box;
-  display: box;
   -webkit-box-orient: vertical;
-  box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-line-clamp: 2;
