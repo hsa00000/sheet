@@ -63,17 +63,17 @@
                         }}
                       </td>
                       <td :rowspan="row._rowspan">{{ row.name }}</td>
-                      <!-- 本人簽名 -->
-                      <td style="height: 70px"></td>
-                      <!-- 攜伴欄留空 (不合併) -->
+
+                      <!-- 本人簽名 ── 讓它跨列 -->
+                      <td :rowspan="row._rowspan" style="height: 70px"></td>
+
+                      <!-- 攜伴欄保持單列，不合併 -->
                       <td style="height: 70px"></td>
                     </tr>
 
                     <!-- 攜伴簽名列 -->
                     <tr v-else>
-                      <!-- 簽名欄留空 -->
-                      <td style="height: 70px"></td>
-                      <!-- 攜伴簽名 -->
+                      <!-- 只剩下攜伴欄 -->
                       <td style="height: 70px"></td>
                     </tr>
                   </template>
