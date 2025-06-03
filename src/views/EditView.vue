@@ -220,7 +220,13 @@
           accept=".csv"
           show-size
         />
-        <v-text-field v-model="newOutsider" label="新增校外人士" hide-details class="mb-5">
+        <v-text-field
+          v-model="newOutsider"
+          label="新增校外人士"
+          @keydown.enter="addOutsider"
+          hide-details
+          class="mb-5"
+        >
           <template #append-inner>
             <v-btn variant="text" @click="addOutsider" :disabled="!newOutsider"> 新增 </v-btn>
           </template>
