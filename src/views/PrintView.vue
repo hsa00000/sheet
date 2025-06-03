@@ -52,7 +52,7 @@
                     <th>單位</th>
                     <th>姓名</th>
                     <th>簽名</th>
-                    <th v-if="showCompanion">攜伴</th>
+                    <th v-if="showCompanion">攜伴簽名</th>
                     <th v-if="showFood">用餐</th>
                   </tr>
                 </thead>
