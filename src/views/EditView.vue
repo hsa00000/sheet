@@ -138,7 +138,7 @@
             </template>
 
             <!-- Editable id column -->
-            <template #[`item.id`]="{ item }">
+            <template #[`item.identity`]="{ item }">
               <v-text-field
                 v-model="item.identity"
                 hide-details
