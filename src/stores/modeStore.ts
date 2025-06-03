@@ -24,14 +24,20 @@ export const useModeStore = defineStore('mode', {
       this.displayCompanion = value
       this._save()
     },
-    loadFromDb(payload: { enableFood: boolean; displayExtendedAsRegular: boolean }) {
+    loadFromDb(payload: {
+      enableFood: boolean
+      displayExtendedAsRegular: boolean
+      displayCompanion: boolean
+    }) {
       this.enableFood = payload.enableFood
       this.displayExtendedAsRegular = payload.displayExtendedAsRegular
+      this.displayCompanion = payload.displayCompanion
     },
     _save() {
       saveModeState({
         enableFood: this.enableFood,
         displayExtendedAsRegular: this.displayExtendedAsRegular,
+        displayCompanion: this.displayCompanion,
       })
     },
   },

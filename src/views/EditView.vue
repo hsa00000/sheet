@@ -180,6 +180,7 @@
                 control-variant="stacked"
                 hide-details
                 :min="0"
+                @update:model-value="saveParticipants(participantStore.participantList)"
               ></v-number-input>
             </template>
 
@@ -365,6 +366,7 @@ watch(
   () => ({
     enableFood: modeStore.enableFood,
     displayExtendedAsRegular: modeStore.displayExtendedAsRegular,
+    displayCompanion: modeStore.displayCompanion,
   }),
   (newVal) => {
     saveModeState(newVal)

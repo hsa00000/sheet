@@ -11,6 +11,7 @@ const EMPTY_PAGE_NUMBER_KEY = 'emptyPageNumber'
 interface ModeState {
   enableFood: boolean
   displayExtendedAsRegular: boolean
+  displayCompanion: boolean
 }
 
 interface ActivityState {
@@ -98,7 +99,18 @@ export const loadModeState = async (): Promise<ModeState | null> => {
   const request = tx.objectStore(STORE_NAME).get(MODE_KEY)
 
   return new Promise((resolve) => {
-    request.onsuccess = () => resolve(request.result ?? null)
+    request.onsuccess = () => {
+      const result = request.result
+      if (!result) return resolve(null)
+
+      const mode: ModeState = {
+        enableFood: result.enableFood ?? false,
+        displayExtendedAsRegular: result.displayExtendedAsRegular ?? false,
+        displayCompanion: result.displayCompanion ?? false,
+      }
+
+      resolve(mode)
+    }
     request.onerror = () => resolve(null)
   })
 }
