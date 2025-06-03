@@ -10,6 +10,7 @@ export interface Header {
   value: string
   width: string
   align?: 'center'
+  sortable?: boolean
 }
 export interface ActivityInfo {
   name: string

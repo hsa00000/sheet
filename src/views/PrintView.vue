@@ -192,7 +192,7 @@ function paginate(source: Participant[]): Row[][] {
 }
 
 // ── Computed Pages (reacts to mode switches) ───────────────────────────────
-const pages = computed(() => paginate(participantStore.participantList))
+const pages = computed(() => paginate(participantStore.sortedParticipantList))
 </script>
 
 <style scoped>

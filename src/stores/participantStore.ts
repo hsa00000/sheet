@@ -1,10 +1,36 @@
 import type { Participant } from '@/type/type'
 import { defineStore } from 'pinia'
 
+interface SortItem {
+  key: keyof Participant
+  order?: boolean | 'asc' | 'desc'
+}
+
 export const useParticipantStore = defineStore('participant', {
-  state: (): { participantList: Participant[] } => ({
+  state: (): {
+    participantList: Participant[]
+    sortBy: SortItem[]
+  } => ({
     participantList: [],
+    sortBy: [{ key: 'identity', order: 'asc' }],
   }),
+  getters: {
+    sortedParticipantList(state): Participant[] {
+      const sorted = [...state.participantList]
+      const sortItem = state.sortBy[0]
+      if (sortItem) {
+        const { key, order } = sortItem
+        sorted.sort((a, b) => {
+          const aValue = a[key] ?? ''
+          const bValue = b[key] ?? ''
+          if (aValue < bValue) return order === 'desc' ? 1 : -1
+          if (aValue > bValue) return order === 'desc' ? -1 : 1
+          return 0
+        })
+      }
+      return sorted
+    },
+  },
   actions: {
     deleteByCombinedIndex(index: number): void {
       if (index >= 0 && index < this.participantList.length) {
@@ -24,6 +50,9 @@ export const useParticipantStore = defineStore('participant', {
         this.participantList[index] = this.participantList[index + 1]
         this.participantList[index + 1] = temp
       }
+    },
+    setSort(field: keyof Participant, descending: boolean): void {
+      this.sortBy = [{ key: field, order: descending ? 'desc' : 'asc' }]
     },
   },
 })

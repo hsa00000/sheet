@@ -124,6 +124,7 @@
             </v-list-item>
           </v-list>
           <v-data-table
+            v-model:sort-by="participantStore.sortBy"
             :headers="tableHeaders"
             :items="participantStore.participantList"
             v-model:page="page"
