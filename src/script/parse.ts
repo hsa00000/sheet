@@ -14,7 +14,7 @@ export function parseCsvToParticipantList(csvText: string): Participant[] {
         Object.entries(row).map(([key, value]) => [key.trim(), value]),
       )
       return {
-        id: String(cleanedRow['職工/學號'] ?? ''),
+        identity: String(cleanedRow['職工/學號'] ?? ''),
         department: String(cleanedRow['單位'] ?? ''),
         name: String(cleanedRow['參加者'] ?? ''),
         food: String(cleanedRow['提供用餐'] ?? ''),
@@ -22,7 +22,7 @@ export function parseCsvToParticipantList(csvText: string): Participant[] {
       }
     })
     .filter((item) => {
-      return item.id !== '' || item.department !== '' || item.name !== '' || item.food !== ''
+      return item.identity !== '' || item.department !== '' || item.name !== '' || item.food !== ''
     })
 
   mappedList.sort((a, b) => {

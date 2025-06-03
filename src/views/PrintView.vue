@@ -62,7 +62,7 @@
                     <tr v-if="!row._isCompanion">
                       <!-- 固定欄 -->
                       <td :rowspan="row._rowspan">{{ row._displayIndex }}</td>
-                      <td :rowspan="row._rowspan">{{ row.id }}</td>
+                      <td :rowspan="row._rowspan">{{ row.identity }}</td>
                       <td :rowspan="row._rowspan">
                         {{
                           modeStore.displayExtendedAsRegular && row.department === '數學延'
@@ -121,7 +121,7 @@ type Row = Participant & {
 }
 
 const createBlankRow = (index?: number): Row => ({
-  id: '',
+  identity: '',
   department: '',
   name: '',
   food: '',

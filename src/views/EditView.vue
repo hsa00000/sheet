@@ -140,7 +140,7 @@
             <!-- Editable id column -->
             <template #[`item.id`]="{ item }">
               <v-text-field
-                v-model="item.id"
+                v-model="item.identity"
                 hide-details
                 @update:model-value="saveParticipants(participantStore.participantList)"
               ></v-text-field>
@@ -302,7 +302,7 @@ const addOutsider = () => {
   const exists = participantStore.participantList.some((p) => p.name === name)
   if (!exists) {
     participantStore.participantList.unshift({
-      id: '',
+      identity: '',
       department: '校外人士',
       name,
       food: '無須用餐',
