@@ -66,6 +66,7 @@ function logShareUrl() {
     modeState: {
       enableFood: modeStore.enableFood,
       displayExtendedAsRegular: modeStore.displayExtendedAsRegular,
+      displayCompanion: modeStore.displayCompanion,
     },
     activityState: {
       title: activityStore.title,
