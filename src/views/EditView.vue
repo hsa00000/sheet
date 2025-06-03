@@ -179,7 +179,7 @@
                 v-model="item.companion"
                 control-variant="stacked"
                 hide-details
-                :min="0"
+                :min="1"
                 @update:model-value="saveParticipants(participantStore.participantList)"
               ></v-number-input>
             </template>
