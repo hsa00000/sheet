@@ -215,16 +215,21 @@
                 <v-btn
                   variant="outlined"
                   @click="moveUp(item)"
-                  :disabled="participantStore.participantList.findIndex((p) => p === item) === 0"
+                  :disabled="
+                    participantStore.sortBy.length > 0 ||
+                    participantStore.participantList.findIndex((p) => p === item) === 0
+                  "
                 >
                   上移
                 </v-btn>
+
                 <v-btn
                   variant="outlined"
                   @click="moveDown(item)"
                   :disabled="
+                    participantStore.sortBy.length > 0 ||
                     participantStore.participantList.findIndex((p) => p === item) ===
-                    participantStore.participantList.length - 1
+                      participantStore.participantList.length - 1
                   "
                 >
                   下移
