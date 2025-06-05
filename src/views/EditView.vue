@@ -37,6 +37,29 @@
                 /> </v-list-item-action
             ></template>
           </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.displayIdentity"
+                  @update:model-value="modeStore.setDisplayIdentity"
+                  label="顯示學號"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.displayDepartment"
+                  @update:model-value="modeStore.setDisplayDepartment"
+                  label="顯示單位"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
         </v-list>
       </v-col>
 
@@ -374,6 +397,8 @@ watch(
     enableFood: modeStore.enableFood,
     displayExtendedAsRegular: modeStore.displayExtendedAsRegular,
     displayCompanion: modeStore.displayCompanion,
+    displayIdentity: modeStore.displayIdentity,
+    displayDepartment: modeStore.displayDepartment,
   }),
   (newVal) => {
     saveModeState(newVal)

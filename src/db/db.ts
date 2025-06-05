@@ -12,6 +12,8 @@ interface ModeState {
   enableFood: boolean
   displayExtendedAsRegular: boolean
   displayCompanion: boolean
+  displayIdentity: boolean
+  displayDepartment: boolean
 }
 
 interface ActivityState {
@@ -107,6 +109,8 @@ export const loadModeState = async (): Promise<ModeState | null> => {
         enableFood: result.enableFood ?? false,
         displayExtendedAsRegular: result.displayExtendedAsRegular ?? false,
         displayCompanion: result.displayCompanion ?? false,
+        displayIdentity: result.displayIdentity ?? true,
+        displayDepartment: result.displayDepartment ?? true,
       }
 
       resolve(mode)

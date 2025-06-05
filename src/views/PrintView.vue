@@ -38,8 +38,8 @@
               <table class="custom-table">
                 <colgroup>
                   <col style="width: 5%" />
-                  <col style="width: 15%" />
-                  <col style="width: 15%" />
+                  <col v-if="showIdentity" style="width: 15%" />
+                  <col v-if="showDepartment" style="width: 15%" />
                   <col style="width: 15%" />
                   <col style="width: 15%" />
                   <col v-if="showCompanion" style="width: 15%" />
@@ -48,8 +48,8 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>學號</th>
-                    <th>單位</th>
+                    <th v-if="showIdentity">學號</th>
+                    <th v-if="showDepartment">單位</th>
                     <th>姓名</th>
                     <th>簽名</th>
                     <th v-if="showCompanion">攜伴簽名</th>
@@ -62,8 +62,10 @@
                     <tr v-if="!row._isCompanion">
                       <!-- 固定欄 -->
                       <td :rowspan="row._rowspan">{{ row._displayIndex }}</td>
-                      <td :rowspan="row._rowspan">{{ row.identity }}</td>
-                      <td :rowspan="row._rowspan">
+                      <td v-if="showIdentity" :rowspan="row._rowspan">
+                        {{ row.identity }}
+                      </td>
+                      <td v-if="showDepartment" :rowspan="row._rowspan">
                         {{
                           modeStore.displayExtendedAsRegular && row.department === '數學延'
                             ? '數學四'
@@ -75,7 +77,9 @@
 
                       <!-- 可選欄 -->
                       <td v-if="showCompanion" style="height: 70px"></td>
-                      <td v-if="showFood" :rowspan="row._rowspan">{{ row.food }}</td>
+                      <td v-if="showFood" :rowspan="row._rowspan">
+                        {{ row.food }}
+                      </td>
                     </tr>
 
                     <!-- 攜伴列（只有攜伴欄） -->
@@ -110,6 +114,8 @@ const emptyPageStore = useEmptyPageNumberStore()
 const modeStore = useModeStore()
 
 // ── Reactive Switches ──────────────────────────────────────────────────────
+const showIdentity = computed(() => modeStore.displayIdentity)
+const showDepartment = computed(() => modeStore.displayDepartment)
 const showCompanion = computed(() => modeStore.displayCompanion)
 const showFood = computed(() => modeStore.enableFood)
 
