@@ -12,7 +12,7 @@ export const useParticipantStore = defineStore('participant', {
     sortBy: SortItem[]
   } => ({
     participantList: [],
-    sortBy: [{ key: 'identity', order: 'asc' }],
+    sortBy: [],
   }),
   getters: {
     sortedParticipantList(state): Participant[] {
