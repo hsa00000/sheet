@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height d-flex align-center justify-center text-center">
     <v-row>
-      <v-col cols="12" xl="3">
+      <v-col cols="12" xl="2">
         <!-- 勾選 -->
         <v-list>
           <v-list-item>
@@ -40,7 +40,7 @@
         </v-list>
       </v-col>
 
-      <v-col cols="12" xl="6">
+      <v-col cols="12" xl="8">
         <v-card>
           <v-list>
             <!-- 活動標題 -->
@@ -212,7 +212,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" xl="3">
+      <v-col cols="12" xl="2">
         <v-file-input
           prepend-icon=""
           append-inner-icon="mdi-paperclip"
