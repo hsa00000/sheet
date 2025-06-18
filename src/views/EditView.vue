@@ -8,21 +8,42 @@
             <template #prepend>
               <v-list-item-action start>
                 <v-checkbox-btn
-                  :model-value="modeStore.enableFood"
-                  @update:model-value="modeStore.setEnableFood"
-                  label="顯示用餐資訊"
+                  :model-value="modeStore.displayExtendedAsRegular"
+                  @update:model-value="modeStore.setDisplayExtendedAsRegular"
+                  label="顯示「數學延」為「數學四」"
                 />
               </v-list-item-action>
             </template>
           </v-list-item>
-
           <v-list-item>
             <template #prepend>
               <v-list-item-action start>
                 <v-checkbox-btn
-                  :model-value="modeStore.displayExtendedAsRegular"
-                  @update:model-value="modeStore.setDisplayExtendedAsRegular"
-                  label="顯示「數學延」為「數學四」"
+                  :model-value="modeStore.displayIdentity"
+                  @update:model-value="modeStore.setDisplayIdentity"
+                  label="顯示學號"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.displayDepartment"
+                  @update:model-value="modeStore.setDisplayDepartment"
+                  label="顯示單位"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.enableFood"
+                  @update:model-value="modeStore.setEnableFood"
+                  label="顯示用餐"
                 />
               </v-list-item-action>
             </template>
@@ -36,29 +57,6 @@
                   label="顯示攜伴"
                 /> </v-list-item-action
             ></template>
-          </v-list-item>
-          <v-list-item>
-            <template #prepend>
-              <v-list-item-action start>
-                <v-checkbox-btn
-                  :model-value="modeStore.displayIdentity"
-                  @update:model-value="modeStore.setDisplayIdentity"
-                  label="顯示學號"
-                />
-              </v-list-item-action>
-            </template>
-          </v-list-item>
-
-          <v-list-item>
-            <template #prepend>
-              <v-list-item-action start>
-                <v-checkbox-btn
-                  :model-value="modeStore.displayDepartment"
-                  @update:model-value="modeStore.setDisplayDepartment"
-                  label="顯示單位"
-                />
-              </v-list-item-action>
-            </template>
           </v-list-item>
         </v-list>
       </v-col>
