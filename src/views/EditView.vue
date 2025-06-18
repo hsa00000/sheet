@@ -41,22 +41,22 @@
             <template #prepend>
               <v-list-item-action start>
                 <v-checkbox-btn
+                  :model-value="modeStore.displayCompanion"
+                  @update:model-value="modeStore.setDisplayCompanion"
+                  label="顯示攜伴"
+                /> </v-list-item-action
+            ></template>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
                   :model-value="modeStore.enableFood"
                   @update:model-value="modeStore.setEnableFood"
                   label="顯示用餐"
                 />
               </v-list-item-action>
             </template>
-          </v-list-item>
-          <v-list-item>
-            <template #prepend>
-              <v-list-item-action start>
-                <v-checkbox-btn
-                  :model-value="modeStore.displayCompanion"
-                  @update:model-value="modeStore.setDisplayCompanion"
-                  label="顯示攜伴"
-                /> </v-list-item-action
-            ></template>
           </v-list-item>
         </v-list>
       </v-col>
