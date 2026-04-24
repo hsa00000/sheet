@@ -40,8 +40,8 @@
                   <col style="width: 5%" />
                   <col v-if="showIdentity" style="width: 15%" />
                   <col v-if="showDepartment" style="width: 15%" />
-                  <col style="width: 15%" />
-                  <col style="width: 15%" />
+                  <col v-if="showName" style="width: 15%" />
+                  <col v-if="showSign" style="width: 15%" />
                   <col v-if="showCompanion" style="width: 15%" />
                   <col v-if="showFood" style="width: 15%" />
                 </colgroup>
@@ -50,8 +50,8 @@
                     <th>#</th>
                     <th v-if="showIdentity">學號</th>
                     <th v-if="showDepartment">單位</th>
-                    <th>姓名</th>
-                    <th>簽名</th>
+                    <th v-if="showName">姓名</th>
+                    <th v-if="showSign">簽名</th>
                     <th v-if="showCompanion">攜伴簽名</th>
                     <th v-if="showFood">用餐</th>
                   </tr>
@@ -72,8 +72,8 @@
                             : row.department
                         }}
                       </td>
-                      <td :rowspan="row._rowspan">{{ row.name }}</td>
-                      <td :rowspan="row._rowspan" style="height: 70px"></td>
+                      <td v-if="showName" :rowspan="row._rowspan">{{ row.name }}</td>
+                      <td v-if="showSign" :rowspan="row._rowspan" style="height: 70px"></td>
 
                       <!-- 可選欄 -->
                       <td v-if="showCompanion" style="height: 70px"></td>
@@ -116,6 +116,8 @@ const modeStore = useModeStore()
 // ── Reactive Switches ──────────────────────────────────────────────────────
 const showIdentity = computed(() => modeStore.displayIdentity)
 const showDepartment = computed(() => modeStore.displayDepartment)
+const showName = computed(() => modeStore.displayName)
+const showSign = computed(() => modeStore.displaySign)
 const showCompanion = computed(() => modeStore.displayCompanion)
 const showFood = computed(() => modeStore.enableFood)
 

@@ -8,6 +8,8 @@ export const headers = computed(() => {
   return BASE_HEADERS.filter((header) => {
     if (!modeStore.displayIdentity && header.value === 'identity') return false
     if (!modeStore.displayDepartment && header.value === 'department') return false
+    if (!modeStore.displayName && header.value === 'name') return false
+    if (!modeStore.displaySign && header.value === 'sign') return false
     if (!modeStore.displayCompanion && header.value === 'companion') return false
     if (!modeStore.enableFood && header.value === 'food') return false
     return true

@@ -41,6 +41,28 @@
             <template #prepend>
               <v-list-item-action start>
                 <v-checkbox-btn
+                  :model-value="modeStore.displayName"
+                  @update:model-value="modeStore.setDisplayName"
+                  label="顯示姓名"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
+                  :model-value="modeStore.displaySign"
+                  @update:model-value="modeStore.setDisplaySign"
+                  label="顯示簽名"
+                />
+              </v-list-item-action>
+            </template>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-list-item-action start>
+                <v-checkbox-btn
                   :model-value="modeStore.displayCompanion"
                   @update:model-value="modeStore.setDisplayCompanion"
                   label="顯示攜伴"
@@ -402,6 +424,8 @@ watch(
     displayCompanion: modeStore.displayCompanion,
     displayIdentity: modeStore.displayIdentity,
     displayDepartment: modeStore.displayDepartment,
+    displayName: modeStore.displayName,
+    displaySign: modeStore.displaySign,
   }),
   (newVal) => {
     saveModeState(newVal)

@@ -8,12 +8,16 @@ export const useModeStore = defineStore('mode', {
     displayCompanion: boolean
     displayIdentity: boolean
     displayDepartment: boolean
+    displayName: boolean
+    displaySign: boolean
   } => ({
     enableFood: false,
     displayExtendedAsRegular: false,
     displayCompanion: false,
     displayIdentity: true,
     displayDepartment: true,
+    displayName: true,
+    displaySign: true,
   }),
   actions: {
     setEnableFood(value: boolean) {
@@ -36,18 +40,30 @@ export const useModeStore = defineStore('mode', {
       this.displayDepartment = value
       this._save()
     },
+    setDisplayName(value: boolean) {
+      this.displayName = value
+      this._save()
+    },
+    setDisplaySign(value: boolean) {
+      this.displaySign = value
+      this._save()
+    },
     loadFromDb(payload: {
       enableFood: boolean
       displayExtendedAsRegular: boolean
       displayCompanion: boolean
       displayIdentity?: boolean
       displayDepartment?: boolean
+      displayName?: boolean
+      displaySign?: boolean
     }) {
       this.enableFood = payload.enableFood
       this.displayExtendedAsRegular = payload.displayExtendedAsRegular
       this.displayCompanion = payload.displayCompanion
       this.displayIdentity = payload.displayIdentity ?? true
       this.displayDepartment = payload.displayDepartment ?? true
+      this.displayName = payload.displayName ?? true
+      this.displaySign = payload.displaySign ?? true
     },
     _save() {
       saveModeState({
@@ -56,6 +72,8 @@ export const useModeStore = defineStore('mode', {
         displayCompanion: this.displayCompanion,
         displayIdentity: this.displayIdentity,
         displayDepartment: this.displayDepartment,
+        displayName: this.displayName,
+        displaySign: this.displaySign,
       })
     },
   },

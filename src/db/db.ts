@@ -14,6 +14,8 @@ interface ModeState {
   displayCompanion: boolean
   displayIdentity: boolean
   displayDepartment: boolean
+  displayName: boolean
+  displaySign: boolean
 }
 
 interface ActivityState {
@@ -111,6 +113,8 @@ export const loadModeState = async (): Promise<ModeState | null> => {
         displayCompanion: result.displayCompanion ?? false,
         displayIdentity: result.displayIdentity ?? true,
         displayDepartment: result.displayDepartment ?? true,
+        displayName: result.displayName ?? true,
+        displaySign: result.displaySign ?? true,
       }
 
       resolve(mode)
