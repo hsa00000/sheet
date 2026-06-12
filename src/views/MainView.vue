@@ -69,6 +69,8 @@ function logShareUrl() {
       displayCompanion: modeStore.displayCompanion,
       displayIdentity: modeStore.displayIdentity,
       displayDepartment: modeStore.displayDepartment,
+      displayName: modeStore.displayName,
+      displaySign: modeStore.displaySign,
     },
     activityState: {
       title: activityStore.title,
